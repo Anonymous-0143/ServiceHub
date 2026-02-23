@@ -398,7 +398,7 @@
 <!-- Authenticated -->
 {% if user.role == 'customer' %}
 <!-- Customer: Services list -->
-<h2 class="fw-black mb-1" style="letter-spacing:-0.5px;">Available Services</h2>
+<h2 class="fw-black mb-1" style="letter-spacing:-0.5px;">Hello, {{ user.get_full_name|default:user.username }}! 👋</h2>
 <p class="text-muted mb-4" style="font-size:0.92rem;">Browse and book trusted local professionals</p>
 <hr style="border-color:#d0d0d0; margin-bottom:28px;">
 <div class="row g-3">
@@ -417,7 +417,7 @@
 </div>
 {% else %}
 <!-- Provider: Welcome + Dashboard link -->
-<h2 class="fw-black mb-1" style="letter-spacing:-0.5px;">Welcome, {{ user.username }}!</h2>
+<h2 class="fw-black mb-1" style="letter-spacing:-0.5px;">Hello, {{ user.get_full_name|default:user.username }}! 👋</h2>
 <p class="text-muted mb-4" style="font-size:0.92rem;">You are logged in as a <strong>Service Provider</strong>.</p>
 <hr style="border-color:#d0d0d0; margin-bottom:28px;">
 <div class="card p-4">

@@ -26,5 +26,6 @@ urlpatterns = [
     path('accounts/register/', accounts_views.choose_role, name='register'),
     path('accounts/register/customer/', accounts_views.register_customer, name='register_customer'),
     path('accounts/register/provider/', accounts_views.register_provider, name='register_provider'),
+    path('accounts/profile/', accounts_views.profile_view, name='profile'),
 
 ]

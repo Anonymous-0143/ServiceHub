@@ -162,7 +162,7 @@
 
 {% block content %}
 
-<h2 class="page-title">📅 My Bookings</h2>
+<h2 class="page-title">Hello, {{ user.get_full_name|default:user.username }}! 👋</h2>
 <p class="page-sub">Track all your service bookings in one place</p>
 
 {% if bookings %}

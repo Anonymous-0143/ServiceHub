@@ -9,7 +9,7 @@ class CustomerRegistrationForm(UserCreationForm):
 
     class Meta(UserCreationForm.Meta):
         model = User
-        fields = ('username', 'email', 'phone', 'password1', 'password2')
+        fields = ('username', 'first_name', 'last_name', 'email', 'phone', 'password1', 'password2')
         widgets = {
             'phone': forms.TextInput(attrs={
                 'class': 'form-control',
@@ -65,7 +65,7 @@ class ProviderRegistrationForm(UserCreationForm):
 
     class Meta(UserCreationForm.Meta):
         model = User
-        fields = ('username', 'email', 'phone', 'password1', 'password2')
+        fields = ('username', 'first_name', 'last_name', 'email', 'phone', 'password1', 'password2')
         widgets = {
             'phone': forms.TextInput(attrs={
                 'class': 'form-control',
@@ -92,3 +92,35 @@ class ProviderRegistrationForm(UserCreationForm):
                 hourly_rate=self.cleaned_data['hourly_rate'],
             )
         return user
+
+
+class ProfileForm(forms.ModelForm):
+    """Form for editing basic user details (both customers & providers)."""
+
+    class Meta:
+        model = User
+        fields = ('first_name', 'last_name', 'email', 'phone')
+        widgets = {
+            'first_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'First name'}),
+            'last_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Last name'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Email'}),
+            'phone': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Phone number'}),
+        }
+
+
+class ProviderProfileForm(forms.ModelForm):
+    """Form for editing provider-specific details."""
+
+    class Meta:
+        model = ProviderProfile
+        fields = ('category', 'experience', 'location', 'hourly_rate')
+        widgets = {
+            'category': forms.Select(attrs={'class': 'form-select'}),
+            'experience': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Years of experience'}),
+            'location': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Your city or area'}),
+            'hourly_rate': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'e.g. 500.00'}),
+        }
+        labels = {
+            'experience': 'Experience (years)',
+            'hourly_rate': 'Hourly Rate (₹)',
+        }

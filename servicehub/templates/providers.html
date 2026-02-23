@@ -91,7 +91,7 @@
     {% for provider in providers %}
     <div class="col-md-4 mb-4">
         <div class="clay-provider-card">
-            <h5>{{ provider.user.username }}</h5>
+            <h5>{{ provider.user.get_full_name|default:provider.user.username }}</h5>
             <p>🛠️ Experience: {{ provider.experience }} years</p>
             <p>📍 Location: {{ provider.location }}</p>
             <p class="rate">₹{{ provider.hourly_rate }}/hour</p>
