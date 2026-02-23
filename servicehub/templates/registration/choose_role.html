@@ -1,0 +1,171 @@
+{% extends 'base.html' %}
+
+{% block sidebar %}{% endblock %}
+{% block content_wrapper_class %}{% endblock %}
+
+{% block extra_head %}
+<style>
+    .role-wrap {
+        min-height: 100vh;
+        background: var(--bg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 16px;
+    }
+
+    .role-container {
+        width: 100%;
+        max-width: 720px;
+        text-align: center;
+    }
+
+    .role-logo .icon {
+        font-size: 2.4rem;
+        display: block;
+        margin-bottom: 10px;
+    }
+
+    .role-logo h1 {
+        font-size: 1.6rem;
+        font-weight: 900;
+        color: var(--dark);
+        margin: 0 0 6px;
+        letter-spacing: -0.5px;
+    }
+
+    .role-logo p {
+        color: var(--muted);
+        font-size: 0.92rem;
+        margin: 0 0 40px;
+    }
+
+    .role-cards {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+    }
+
+    @media (max-width: 560px) {
+        .role-cards {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .role-card {
+        background: var(--surface);
+        border-radius: var(--clay-radius);
+        padding: 44px 32px 36px;
+        text-decoration: none;
+        color: var(--dark);
+        box-shadow: var(--clay-shadow);
+        transition: transform 0.2s, box-shadow 0.2s;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .role-card:hover {
+        transform: translateY(-6px);
+        box-shadow:
+            0 2px 0 rgba(0, 0, 0, 0.06),
+            0 16px 40px rgba(0, 0, 0, 0.12),
+            0 40px 70px rgba(0, 0, 0, 0.06),
+            inset 0 -3px 0 rgba(0, 0, 0, 0.08),
+            inset 0 1px 0 rgba(255, 255, 255, 0.85);
+        color: var(--dark);
+    }
+
+    .role-card:active {
+        transform: translateY(2px);
+        box-shadow: var(--clay-shadow);
+    }
+
+    .role-card .role-icon {
+        font-size: 3.2rem;
+        margin-bottom: 8px;
+        filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.12));
+    }
+
+    .role-card h3 {
+        font-size: 1.15rem;
+        font-weight: 800;
+        margin: 0;
+        letter-spacing: -0.3px;
+    }
+
+    .role-card p {
+        color: var(--muted);
+        font-size: 0.85rem;
+        margin: 0;
+        line-height: 1.6;
+        max-width: 220px;
+    }
+
+    .role-card .arrow {
+        margin-top: 14px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: var(--dark);
+        color: #fff;
+        font-size: 1.1rem;
+        font-weight: 700;
+        box-shadow: 0 3px 0 rgba(0, 0, 0, 0.25), 0 6px 14px rgba(0, 0, 0, 0.10);
+        transition: transform 0.15s;
+    }
+
+    .role-card:hover .arrow {
+        transform: translateX(3px);
+    }
+
+    .role-back {
+        margin-top: 32px;
+        display: inline-block;
+        color: var(--muted);
+        font-size: 0.88rem;
+        text-decoration: none;
+        font-weight: 600;
+        border-bottom: 2px solid var(--border);
+        transition: border-color 0.2s, color 0.2s;
+    }
+
+    .role-back:hover {
+        color: var(--dark);
+        border-color: var(--dark);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="role-wrap">
+    <div class="role-container">
+        <div class="role-logo">
+            <span class="icon">🛠️</span>
+            <h1>Join ServiceHub</h1>
+            <p>Choose how you'd like to use the platform</p>
+        </div>
+
+        <div class="role-cards">
+            <a href="{% url 'register_customer' %}" class="role-card">
+                <div class="role-icon">🛒</div>
+                <h3>I'm a Customer</h3>
+                <p>Find and book trusted local service providers near you</p>
+                <div class="arrow">→</div>
+            </a>
+            <a href="{% url 'register_provider' %}" class="role-card">
+                <div class="role-icon">🔧</div>
+                <h3>I'm a Service Provider</h3>
+                <p>Offer your skills, grow your client base, and manage bookings</p>
+                <div class="arrow">→</div>
+            </a>
+        </div>
+
+        <a href="{% url 'home' %}" class="role-back">← Back to Home</a>
+    </div>
+</div>
+{% endblock %}

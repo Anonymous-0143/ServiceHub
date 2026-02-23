@@ -1,0 +1,649 @@
+{% extends 'base.html' %}
+
+{% block extra_head %}
+<style>
+    /* Landing page — black/white/grey claymorphism */
+    .hero {
+        background: var(--dark);
+        border-radius: 0 0 36px 36px;
+        padding: 90px 0 110px;
+        position: relative;
+        overflow: hidden;
+        box-shadow: var(--clay-shadow-dark);
+    }
+
+    .hero::before {
+        content: '';
+        position: absolute;
+        top: -80px;
+        right: -80px;
+        width: 400px;
+        height: 400px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(255, 255, 255, 0.04) 0%, transparent 70%);
+        pointer-events: none;
+    }
+
+    .hero-eyebrow {
+        display: inline-block;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        color: #aaaaaa;
+        border-radius: 50px;
+        padding: 6px 18px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        margin-bottom: 22px;
+    }
+
+    .hero h1 {
+        font-size: 3.4rem;
+        font-weight: 900;
+        line-height: 1.12;
+        color: #ffffff;
+        margin-bottom: 20px;
+        letter-spacing: -1.5px;
+    }
+
+    .hero h1 .accent {
+        color: #bbbbbb;
+    }
+
+    .hero p.lead {
+        font-size: 1.1rem;
+        color: #888;
+        max-width: 520px;
+        line-height: 1.75;
+        margin-bottom: 38px;
+    }
+
+    .btn-clay-white {
+        background: #ffffff;
+        color: var(--dark);
+        border: none;
+        border-radius: var(--clay-radius-sm);
+        padding: 14px 32px;
+        font-size: 0.95rem;
+        font-weight: 700;
+        text-decoration: none;
+        display: inline-block;
+        box-shadow: 0 4px 0 rgba(0, 0, 0, 0.3), 0 10px 28px rgba(0, 0, 0, 0.2);
+        transition: all 0.15s;
+    }
+
+    .btn-clay-white:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 0 rgba(0, 0, 0, 0.3), 0 16px 32px rgba(0, 0, 0, 0.25);
+        color: var(--dark);
+    }
+
+    .btn-clay-white:active {
+        transform: translateY(2px);
+        box-shadow: 0 2px 0 rgba(0, 0, 0, 0.3);
+    }
+
+    .btn-clay-ghost {
+        background: transparent;
+        color: #999;
+        border: 2px solid rgba(255, 255, 255, 0.15);
+        border-radius: var(--clay-radius-sm);
+        padding: 13px 28px;
+        font-size: 0.95rem;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-block;
+        transition: all 0.2s;
+    }
+
+    .btn-clay-ghost:hover {
+        border-color: rgba(255, 255, 255, 0.35);
+        color: #ccc;
+    }
+
+    /* Stats bar */
+    .stats-bar {
+        background: var(--surface);
+        border-radius: var(--clay-radius);
+        box-shadow: var(--clay-shadow);
+        padding: 28px 0;
+        margin-top: -50px;
+        position: relative;
+        z-index: 10;
+    }
+
+    .stat-item h3 {
+        font-size: 2rem;
+        font-weight: 900;
+        color: var(--dark);
+        margin: 0;
+        letter-spacing: -1px;
+    }
+
+    .stat-item p {
+        color: var(--muted);
+        margin: 4px 0 0;
+        font-size: 0.85rem;
+        font-weight: 500;
+    }
+
+    .stat-divider {
+        width: 1px;
+        height: 44px;
+        background: var(--border);
+    }
+
+    /* Section headings */
+    .section-tag {
+        font-size: 0.72rem;
+        font-weight: 800;
+        letter-spacing: 2.5px;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: 10px;
+        display: block;
+    }
+
+    .section-heading {
+        font-size: 2rem;
+        font-weight: 900;
+        color: var(--dark);
+        letter-spacing: -0.8px;
+        margin-bottom: 10px;
+    }
+
+    .section-sub {
+        color: var(--muted);
+        font-size: 0.95rem;
+        max-width: 480px;
+        margin: 0 auto 48px;
+        line-height: 1.7;
+    }
+
+    /* Step cards */
+    .step-card {
+        background: var(--surface);
+        border-radius: var(--clay-radius);
+        padding: 36px 28px 30px;
+        text-align: center;
+        box-shadow: var(--clay-shadow);
+        height: 100%;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .step-card:hover {
+        transform: translateY(-5px);
+        box-shadow:
+            0 2px 0 rgba(0, 0, 0, 0.06),
+            0 16px 40px rgba(0, 0, 0, 0.12),
+            0 40px 70px rgba(0, 0, 0, 0.06),
+            inset 0 -3px 0 rgba(0, 0, 0, 0.08),
+            inset 0 1px 0 rgba(255, 255, 255, 0.85);
+    }
+
+    .step-num {
+        width: 52px;
+        height: 52px;
+        border-radius: 50%;
+        background: var(--dark);
+        color: white;
+        font-size: 1.2rem;
+        font-weight: 800;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+        box-shadow: 0 4px 0 rgba(0, 0, 0, 0.25), 0 8px 20px rgba(0, 0, 0, 0.12);
+    }
+
+    .step-card h5 {
+        font-size: 1rem;
+        font-weight: 800;
+        color: var(--dark);
+        margin-bottom: 10px;
+    }
+
+    .step-card p {
+        color: var(--muted);
+        font-size: 0.88rem;
+        line-height: 1.7;
+        margin: 0;
+    }
+
+    /* Category chips */
+    .chip {
+        display: inline-block;
+        background: var(--surface);
+        border: 2px solid var(--border);
+        border-radius: 50px;
+        padding: 9px 20px;
+        font-size: 0.88rem;
+        font-weight: 600;
+        color: var(--dark);
+        text-decoration: none;
+        margin: 5px;
+        box-shadow: 0 3px 0 #c8c8c8, 0 6px 14px rgba(0, 0, 0, 0.06);
+        transition: all 0.15s;
+    }
+
+    .chip:hover {
+        background: var(--dark);
+        color: white;
+        border-color: var(--dark);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 0 rgba(0, 0, 0, 0.2), 0 10px 20px rgba(0, 0, 0, 0.12);
+    }
+
+    /* Testimonial cards */
+    .testi-card {
+        background: var(--surface);
+        border-radius: var(--clay-radius);
+        padding: 28px;
+        height: 100%;
+        box-shadow: var(--clay-shadow);
+    }
+
+    .testi-stars {
+        font-size: 0.95rem;
+        margin-bottom: 14px;
+        color: #333;
+    }
+
+    .testi-card p {
+        color: var(--mid);
+        font-size: 0.92rem;
+        line-height: 1.75;
+        font-style: italic;
+        margin-bottom: 20px;
+    }
+
+    .author-chip {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .author-av {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: var(--dark);
+        color: white;
+        font-weight: 800;
+        font-size: 0.95rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 3px 0 rgba(0, 0, 0, 0.2);
+    }
+
+    .author-av.grey {
+        background: #555;
+    }
+
+    .author-av.light {
+        background: #888;
+    }
+
+    .author-name {
+        font-weight: 700;
+        font-size: 0.88rem;
+        color: var(--dark);
+        margin: 0;
+    }
+
+    .author-role {
+        font-size: 0.78rem;
+        color: var(--muted);
+        margin: 0;
+    }
+
+    /* CTA band */
+    .cta-band {
+        background: var(--dark);
+        border-radius: var(--clay-radius);
+        padding: 64px 48px;
+        text-align: center;
+        box-shadow: var(--clay-shadow-dark);
+        margin: 0;
+    }
+
+    .cta-band h2 {
+        font-size: 2.2rem;
+        font-weight: 900;
+        color: white;
+        letter-spacing: -0.8px;
+        margin-bottom: 12px;
+    }
+
+    .cta-band p {
+        color: #777;
+        font-size: 1rem;
+        margin-bottom: 32px;
+        max-width: 440px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    /* Footer */
+    .site-footer {
+        background: #111111;
+        padding: 52px 0 28px;
+        margin-top: 0;
+        border-radius: var(--clay-radius) var(--clay-radius) 0 0;
+    }
+
+    .footer-brand {
+        font-size: 1.2rem;
+        font-weight: 900;
+        color: white;
+        margin-bottom: 8px;
+    }
+
+    .site-footer p {
+        font-size: 0.88rem;
+        color: #555;
+        line-height: 1.65;
+    }
+
+    .footer-heading {
+        font-weight: 700;
+        color: #aaa;
+        font-size: 0.8rem;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        margin-bottom: 14px;
+    }
+
+    .site-footer a {
+        color: #555;
+        text-decoration: none;
+        font-size: 0.9rem;
+        display: block;
+        margin-bottom: 8px;
+        transition: color 0.2s;
+    }
+
+    .site-footer a:hover {
+        color: #aaa;
+    }
+
+    .hr-dark {
+        border-color: #222;
+        margin: 36px 0 24px;
+    }
+
+    .footer-copy {
+        text-align: center;
+        font-size: 0.82rem;
+        color: #444;
+    }
+
+    /* Section spacing */
+    .section {
+        padding: 80px 0;
+    }
+
+    .section-alt {
+        padding: 80px 0;
+        background: #dcdcdc;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+{% if user.is_authenticated %}
+<!-- Authenticated -->
+{% if user.role == 'customer' %}
+<!-- Customer: Services list -->
+<h2 class="fw-black mb-1" style="letter-spacing:-0.5px;">Available Services</h2>
+<p class="text-muted mb-4" style="font-size:0.92rem;">Browse and book trusted local professionals</p>
+<hr style="border-color:#d0d0d0; margin-bottom:28px;">
+<div class="row g-3">
+    {% for category in categories %}
+    <div class="col-md-4">
+        <div class="card p-4 h-100">
+            <h5 class="fw-bold" style="margin-bottom:8px;">
+                <a href="{% url 'providers_by_category' category.id %}" class="text-decoration-none text-dark">
+                    {{ category.name }}
+                </a>
+            </h5>
+            <p style="color:#888; font-size:0.88rem; margin:0;">{{ category.description }}</p>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<!-- Provider: Welcome + Dashboard link -->
+<h2 class="fw-black mb-1" style="letter-spacing:-0.5px;">Welcome, {{ user.username }}!</h2>
+<p class="text-muted mb-4" style="font-size:0.92rem;">You are logged in as a <strong>Service Provider</strong>.</p>
+<hr style="border-color:#d0d0d0; margin-bottom:28px;">
+<div class="card p-4">
+    <h5 class="fw-bold mb-2">📋 Your Provider Dashboard</h5>
+    <p style="color:#888; font-size:0.92rem;">View and manage your incoming bookings from customers.</p>
+    <a href="{% url 'provider_dashboard' %}" class="btn btn-dark" style="width:fit-content;">Go to Dashboard</a>
+</div>
+{% endif %}
+
+{% else %}
+<!-- Unauthenticated: Full Landing Page -->
+
+<!-- HERO -->
+<section class="hero">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-7">
+                <span class="hero-eyebrow">✦ Trusted Local Services</span>
+                <h1>Find the Help<br>You <span class="accent">Actually Need</span></h1>
+                <p class="lead">ServiceHub connects you with verified, skilled professionals in your neighbourhood —
+                    from plumbing to tutoring and everything in between.</p>
+                <div class="d-flex flex-wrap gap-3">
+                    <a href="{% url 'register' %}" class="btn-clay-white">Get Started Free</a>
+                    <a href="{% url 'login' %}" class="btn-clay-ghost">Sign In</a>
+                </div>
+            </div>
+            <div class="col-lg-5 d-none d-lg-flex justify-content-center align-items-center">
+                <div style="font-size:8rem; filter:drop-shadow(0 16px 32px rgba(0,0,0,0.5)); margin-top:-20px;">�</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- STATS BAR -->
+<div class="container" style="margin-top:-50px; position:relative; z-index:10;">
+    <div class="stats-bar px-4">
+        <div class="row text-center align-items-center">
+            <div class="col">
+                <div class="stat-item">
+                    <h3>500+</h3>
+                    <p>Verified Providers</p>
+                </div>
+            </div>
+            <div class="col-auto d-none d-md-flex align-items-center">
+                <div class="stat-divider"></div>
+            </div>
+            <div class="col">
+                <div class="stat-item">
+                    <h3>50+</h3>
+                    <p>Categories</p>
+                </div>
+            </div>
+            <div class="col-auto d-none d-md-flex align-items-center">
+                <div class="stat-divider"></div>
+            </div>
+            <div class="col">
+                <div class="stat-item">
+                    <h3>4.8★</h3>
+                    <p>Avg Rating</p>
+                </div>
+            </div>
+            <div class="col-auto d-none d-md-flex align-items-center">
+                <div class="stat-divider"></div>
+            </div>
+            <div class="col">
+                <div class="stat-item">
+                    <h3>10K+</h3>
+                    <p>Happy Customers</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<section class="section">
+    <div class="container">
+        <div class="text-center">
+            <span class="section-tag">How it works</span>
+            <h2 class="section-heading">Book in 3 simple steps</h2>
+            <p class="section-sub">No calls, no guesswork. Find, book, and relax.</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="step-card">
+                    <div class="step-num">1</div>
+                    <h5>Browse Categories</h5>
+                    <p>Explore dozens of local service categories and find exactly what you need.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="step-card">
+                    <div class="step-num">2</div>
+                    <h5>Book a Provider</h5>
+                    <p>View provider profiles and book an appointment at your preferred time — in minutes.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="step-card">
+                    <div class="step-num">3</div>
+                    <h5>Get It Done</h5>
+                    <p>Your provider shows up and completes the job. Track everything from your dashboard.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CATEGORIES -->
+<section class="section-alt">
+    <div class="container">
+        <div class="text-center mb-4">
+            <span class="section-tag">Categories</span>
+            <h2 class="section-heading">We've got you covered</h2>
+        </div>
+        <div class="text-center">
+            <a href="{% url 'register' %}" class="chip">🔧 Plumbing</a>
+            <a href="{% url 'register' %}" class="chip">⚡ Electrician</a>
+            <a href="{% url 'register' %}" class="chip">🧹 Cleaning</a>
+            <a href="{% url 'register' %}" class="chip">📚 Tutoring</a>
+            <a href="{% url 'register' %}" class="chip">🎨 Painting</a>
+            <a href="{% url 'register' %}" class="chip">🌿 Gardening</a>
+            <a href="{% url 'register' %}" class="chip">🚗 Auto Repair</a>
+            <a href="{% url 'register' %}" class="chip">🐾 Pet Care</a>
+            <a href="{% url 'register' %}" class="chip">💻 IT Support</a>
+            <a href="{% url 'register' %}" class="chip">+ More</a>
+        </div>
+    </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="section">
+    <div class="container">
+        <div class="text-center mb-4">
+            <span class="section-tag">Testimonials</span>
+            <h2 class="section-heading">What users say</h2>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="testi-card">
+                    <div class="testi-stars">★★★★★</div>
+                    <p>"Found a great plumber in 10 minutes. The booking was seamless and the service was excellent!"
+                    </p>
+                    <div class="author-chip">
+                        <div class="author-av">A</div>
+                        <div>
+                            <p class="author-name">Ananya M.</p>
+                            <p class="author-role">Homeowner</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="testi-card">
+                    <div class="testi-stars">★★★★★</div>
+                    <p>"As a freelance electrician, ServiceHub helped me grow my client base by 3× in two months."</p>
+                    <div class="author-chip">
+                        <div class="author-av grey">R</div>
+                        <div>
+                            <p class="author-name">Rahul K.</p>
+                            <p class="author-role">Service Provider</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="testi-card">
+                    <div class="testi-stars">★★★★☆</div>
+                    <p>"The dashboard makes tracking bookings incredibly easy — everything in one clean place."</p>
+                    <div class="author-chip">
+                        <div class="author-av light">P</div>
+                        <div>
+                            <p class="author-name">Priya S.</p>
+                            <p class="author-role">Regular User</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA BAND -->
+<section class="section-alt">
+    <div class="container">
+        <div class="cta-band">
+            <h2>Ready to get started?</h2>
+            <p>Join ServiceHub today — free to sign up, takes under a minute.</p>
+            <div class="d-flex justify-content-center gap-3 flex-wrap">
+                <a href="{% url 'register' %}" class="btn-clay-white">Create Free Account</a>
+                <a href="{% url 'login' %}" class="btn-clay-ghost">Sign In</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="footer-brand">🛠️ ServiceHub</div>
+                <p>Connecting communities with trusted local service providers.</p>
+            </div>
+            <div class="col-md-2">
+                <div class="footer-heading">Platform</div>
+                <a href="{% url 'home' %}">Home</a>
+                <a href="{% url 'register' %}">Register</a>
+                <a href="{% url 'login' %}">Login</a>
+            </div>
+            <div class="col-md-3">
+                <div class="footer-heading">Providers</div>
+                <a href="{% url 'register' %}">Join as Provider</a>
+                <a href="{% url 'login' %}">Provider Login</a>
+            </div>
+            <div class="col-md-3">
+                <div class="footer-heading">Contact</div>
+                <p style="margin:0; font-size:0.88rem;">📧 support@servicehub.com</p>
+                <p style="margin:4px 0 0; font-size:0.88rem;">📍 Available Nationwide</p>
+            </div>
+        </div>
+        <hr class="hr-dark">
+        <p class="footer-copy">© 2024 ServiceHub. All rights reserved.</p>
+    </div>
+</footer>
+
+{% endif %}
+
+{% endblock %}

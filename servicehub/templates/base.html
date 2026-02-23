@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ServiceHub</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <style>
+        /* ── Clay Design Tokens ── */
+        :root {
+            --bg: #e4e4e4;
+            --surface: #ffffff;
+            --dark: #1a1a1a;
+            --dark2: #2e2e2e;
+            --mid: #555555;
+            --muted: #888888;
+            --border: #d0d0d0;
+            --sidebar-w: 248px;
+
+            /* Clay shadow — layered for the puffy inflated look */
+            --clay-shadow:
+                0 2px 0 rgba(0, 0, 0, 0.06),
+                0 8px 20px rgba(0, 0, 0, 0.08),
+                0 24px 48px rgba(0, 0, 0, 0.05),
+                inset 0 -3px 0 rgba(0, 0, 0, 0.08),
+                inset 0 1px 0 rgba(255, 255, 255, 0.85);
+
+            --clay-shadow-dark:
+                0 2px 0 rgba(0, 0, 0, 0.3),
+                0 8px 24px rgba(0, 0, 0, 0.25),
+                inset 0 -3px 0 rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.08);
+
+            --clay-radius: 22px;
+            --clay-radius-sm: 14px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            margin: 0;
+            color: var(--dark);
+        }
+
+        /* ── Sidebar ── */
+        .sidebar {
+            width: var(--sidebar-w);
+            height: 100vh;
+            background-color: var(--dark);
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding: 0;
+            z-index: 200;
+            display: flex;
+            flex-direction: column;
+            box-shadow: var(--clay-shadow-dark);
+            border-radius: 0 var(--clay-radius) var(--clay-radius) 0;
+            overflow: hidden;
+        }
+
+        .sidebar-brand {
+            padding: 28px 24px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+        }
+
+        .sidebar-brand .logo-icon {
+            font-size: 1.5rem;
+            margin-bottom: 6px;
+            display: block;
+        }
+
+        .sidebar-brand h5 {
+            color: #ffffff;
+            font-weight: 800;
+            font-size: 1.1rem;
+            margin: 0;
+            letter-spacing: -0.3px;
+        }
+
+        .sidebar-brand p {
+            color: #666;
+            font-size: 0.75rem;
+            margin: 2px 0 0;
+        }
+
+        .sidebar-nav {
+            padding: 16px 12px;
+            flex: 1;
+        }
+
+        .sidebar a {
+            color: #aaaaaa;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 11px 14px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            border-radius: var(--clay-radius-sm);
+            transition: all 0.2s;
+            margin-bottom: 4px;
+        }
+
+        .sidebar a:hover {
+            background: rgba(255, 255, 255, 0.07);
+            color: #ffffff;
+        }
+
+        .sidebar-footer {
+            padding: 16px 12px 24px;
+            border-top: 1px solid rgba(255, 255, 255, 0.07);
+        }
+
+        .sidebar-footer a {
+            color: #666 !important;
+        }
+
+        .sidebar-footer a:hover {
+            color: #ff6b6b !important;
+            background: rgba(255, 107, 107, 0.08) !important;
+        }
+
+        /* ── Main content ── */
+        .main-content {
+            padding: 36px 32px;
+        }
+
+        .has-sidebar .main-content {
+            margin-left: var(--sidebar-w);
+        }
+
+        /* ── Clay Card ── */
+        .card {
+            background: var(--surface);
+            border: none;
+            border-radius: var(--clay-radius);
+            box-shadow: var(--clay-shadow);
+        }
+
+        /* ── Status colours (grey-scale) ── */
+        .status-pending {
+            color: #555;
+            font-weight: 600;
+        }
+
+        .status-accepted {
+            color: #1a1a1a;
+            font-weight: 700;
+        }
+
+        .status-rejected {
+            color: #888;
+            font-weight: 600;
+            text-decoration: line-through;
+        }
+
+        .status-cancelled {
+            color: #aaa;
+            font-weight: 600;
+        }
+
+        /* ── Form Controls ── */
+        .form-control,
+        .form-select {
+            border-radius: var(--clay-radius-sm);
+            border: 2px solid var(--border);
+            padding: 11px 14px;
+            font-size: 0.92rem;
+            background: #fafafa;
+            box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.04);
+            transition: all 0.2s;
+            color: var(--dark);
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: var(--dark);
+            background: var(--surface);
+            box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.04), 0 0 0 3px rgba(0, 0, 0, 0.06);
+            outline: none;
+        }
+
+        /* ── Buttons ── */
+        .btn-dark {
+            background: var(--dark);
+            color: white;
+            border: none;
+            border-radius: var(--clay-radius-sm);
+            padding: 11px 22px;
+            font-weight: 600;
+            box-shadow: 0 4px 0 rgba(0, 0, 0, 0.3), 0 8px 20px rgba(0, 0, 0, 0.12);
+            transition: all 0.15s;
+        }
+
+        .btn-dark:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 0 rgba(0, 0, 0, 0.3), 0 12px 24px rgba(0, 0, 0, 0.15);
+            background: var(--dark);
+            color: white;
+        }
+
+        .btn-dark:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 rgba(0, 0, 0, 0.3);
+        }
+
+        /* ── Alerts ── */
+        .alert {
+            border: none;
+            border-radius: var(--clay-radius-sm);
+            font-size: 0.9rem;
+            box-shadow: var(--clay-shadow);
+        }
+    </style>
+    {% block extra_head %}{% endblock %}
+</head>
+
+<body class="{% if user.is_authenticated %}has-sidebar{% endif %}">
+
+    {% block sidebar %}
+    {% if user.is_authenticated %}
+    <div class="sidebar">
+        <div class="sidebar-brand">
+            <span class="logo-icon">🛠️</span>
+            <h5>ServiceHub</h5>
+            <p>Local Services Platform</p>
+        </div>
+
+        <div class="sidebar-nav">
+            {% if user.role == 'provider' %}
+            <a href="{% url 'provider_dashboard' %}">📋 &nbsp;Dashboard</a>
+            {% else %}
+            <a href="{% url 'user_dashboard' %}">📅 &nbsp;My Bookings</a>
+            {% endif %}
+            <a href="{% url 'home' %}">🏠 &nbsp;Home</a>
+        </div>
+
+        <div class="sidebar-footer">
+            <a href="{% url 'logout' %}">🚪 &nbsp;Logout</a>
+        </div>
+    </div>
+    {% endif %}
+    {% endblock %}
+
+    <div class="{% block content_wrapper_class %}main-content{% endblock %}">
+        {% block content %}{% endblock %}
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

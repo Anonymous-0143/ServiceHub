@@ -1,0 +1,176 @@
+{% extends 'base.html' %}
+
+{% block sidebar %}{% endblock %}
+{% block content_wrapper_class %}{% endblock %}
+
+{% block extra_head %}
+<style>
+    .auth-wrap {
+        min-height: 100vh;
+        background: var(--bg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 16px;
+    }
+
+    .auth-card {
+        background: var(--surface);
+        border-radius: var(--clay-radius);
+        padding: 48px 44px;
+        width: 100%;
+        max-width: 500px;
+        box-shadow: var(--clay-shadow);
+    }
+
+    .auth-logo {
+        text-align: center;
+        margin-bottom: 32px;
+    }
+
+    .auth-logo .icon {
+        font-size: 2.4rem;
+        display: block;
+        margin-bottom: 10px;
+    }
+
+    .auth-logo h1 {
+        font-size: 1.4rem;
+        font-weight: 900;
+        color: var(--dark);
+        margin: 0;
+        letter-spacing: -0.4px;
+    }
+
+    .auth-logo p {
+        color: var(--muted);
+        font-size: 0.85rem;
+        margin: 5px 0 0;
+    }
+
+    .auth-card .form-label {
+        font-weight: 600;
+        font-size: 0.83rem;
+        color: var(--mid);
+        margin-bottom: 6px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .auth-card .form-control,
+    .auth-card select {
+        border-radius: var(--clay-radius-sm);
+        border: 2px solid var(--border);
+        padding: 11px 14px;
+        font-size: 0.92rem;
+        background: #fafafa;
+        box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.04);
+        transition: all 0.2s;
+        width: 100%;
+        display: block;
+    }
+
+    .auth-card .form-control:focus,
+    .auth-card select:focus {
+        border-color: var(--dark);
+        background: var(--surface);
+        box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.04), 0 0 0 3px rgba(0, 0, 0, 0.06);
+        outline: none;
+    }
+
+    .field-error {
+        color: #555;
+        font-size: 0.8rem;
+        margin-top: 5px;
+        padding: 4px 10px;
+        background: #f0f0f0;
+        border-radius: 8px;
+        border-left: 3px solid #aaa;
+    }
+
+    .field-help {
+        color: var(--muted);
+        font-size: 0.78rem;
+        margin-top: 4px;
+    }
+
+    .btn-auth {
+        width: 100%;
+        background: var(--dark);
+        color: white;
+        border: none;
+        border-radius: var(--clay-radius-sm);
+        padding: 13px;
+        font-size: 0.95rem;
+        font-weight: 700;
+        cursor: pointer;
+        box-shadow: 0 4px 0 rgba(0, 0, 0, 0.35), 0 8px 24px rgba(0, 0, 0, 0.12);
+        transition: all 0.15s;
+        letter-spacing: 0.2px;
+        margin-top: 8px;
+    }
+
+    .btn-auth:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 0 rgba(0, 0, 0, 0.35), 0 14px 30px rgba(0, 0, 0, 0.15);
+    }
+
+    .btn-auth:active {
+        transform: translateY(2px);
+        box-shadow: 0 2px 0 rgba(0, 0, 0, 0.35);
+    }
+
+    .auth-link {
+        text-align: center;
+        margin-top: 22px;
+        font-size: 0.88rem;
+        color: var(--muted);
+    }
+
+    .auth-link a {
+        color: var(--dark);
+        font-weight: 700;
+        text-decoration: none;
+        border-bottom: 2px solid var(--border);
+        transition: border-color 0.2s;
+    }
+
+    .auth-link a:hover {
+        border-color: var(--dark);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="auth-wrap">
+    <div class="auth-card">
+        <div class="auth-logo">
+            <span class="icon">{{ role_icon|default:"🛠️" }}</span>
+            <h1>ServiceHub</h1>
+            <p>Create your <strong>{{ role_label|default:"" }}</strong> account</p>
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+            {% for field in form %}
+            <div class="mb-3">
+                <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                {{ field }}
+                {% if field.errors %}
+                <div class="field-error">{{ field.errors.0 }}</div>
+                {% endif %}
+                {% if field.help_text %}
+                <div class="field-help">{{ field.help_text }}</div>
+                {% endif %}
+            </div>
+            {% endfor %}
+            <button type="submit" class="btn-auth">Create Account →</button>
+        </form>
+
+        <div class="auth-link">
+            <a href="{% url 'register' %}" style="margin-right: 12px;">← Choose a different role</a>
+            | Already have an account? <a href="{% url 'login' %}">Sign in here</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
