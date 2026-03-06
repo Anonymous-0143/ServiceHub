@@ -10,10 +10,10 @@ FEEDBACK_TYPES = [
 
 
 class FeedbackForm(forms.Form):
-    """Customer → Admin feedback / complaint form."""
+    """Customer & Provider feedback / complaint form."""
 
     feedback_type = forms.ChoiceField(
-        choices=FEEDBACK_TYPES,
+        choices=[],  # Set dynamically in __init__
         widget=forms.Select(attrs={'class': 'form-select'}),
         label='Topic',
     )
@@ -31,6 +31,32 @@ class FeedbackForm(forms.Form):
             'rows': 6,
         }),
     )
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+        
+        provider_choices = [
+            ('', 'Select a topic'),
+            ('customer_issue', '⚠️ Issue with a customer'),
+            ('payment_issue', '💸 Payment or listing issue'),
+            ('bug', '🐛 Report a platform bug'),
+            ('suggestion', '💡 Feature suggestion'),
+            ('general', '💬 General feedback'),
+        ]
+        
+        customer_choices = [
+            ('', 'Select a topic'),
+            ('complaint', '⚠️ Complaint about a provider'),
+            ('bug', '🐛 Report a bug / issue'),
+            ('suggestion', '💡 Feature suggestion'),
+            ('general', '💬 General feedback'),
+        ]
+
+        if user and hasattr(user, 'role') and user.role == 'provider':
+            self.fields['feedback_type'].choices = provider_choices
+        else:
+            self.fields['feedback_type'].choices = customer_choices
 
 
 RATING_CHOICES = [(i, f'{i} ★') for i in range(1, 6)]

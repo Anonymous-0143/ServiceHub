@@ -416,14 +416,93 @@
     {% endfor %}
 </div>
 {% else %}
-<!-- Provider: Welcome + Dashboard link -->
-<h2 class="fw-black mb-1" style="letter-spacing:-0.5px;">Hello, {{ user.get_full_name|default:user.username }}! 👋</h2>
-<p class="text-muted mb-4" style="font-size:0.92rem;">You are logged in as a <strong>Service Provider</strong>.</p>
-<hr style="border-color:#d0d0d0; margin-bottom:28px;">
-<div class="card p-4">
-    <h5 class="fw-bold mb-2">📋 Your Provider Dashboard</h5>
-    <p style="color:#888; font-size:0.92rem;">View and manage your incoming bookings from customers.</p>
-    <a href="{% url 'provider_dashboard' %}" class="btn btn-dark" style="width:fit-content;">Go to Dashboard</a>
+<!-- Provider: Mission Control Dashboard -->
+<div class="d-flex justify-content-between align-items-center mb-1">
+    <h2 class="fw-black m-0" style="letter-spacing:-0.5px;">Mission Control 🚀</h2>
+</div>
+<p class="text-muted mb-4" style="font-size:0.92rem;">Your ServiceHub overview</p>
+
+<!-- Stat Cards Row -->
+<div class="row g-4 mb-5">
+    <!-- Active Jobs -->
+    <div class="col-md-4">
+        <div class="card p-4 h-100" style="background-color: #d4fcd4; border: 3px solid #000;">
+            <p class="text-uppercase fw-bold mb-1" style="color: #444; font-size: 0.8rem; letter-spacing: 1px;">Active
+                Jobs</p>
+            <h2 class="fw-black m-0" style="font-size: 3rem;">{{ active_jobs|default:"0" }}</h2>
+        </div>
+    </div>
+
+    <!-- Earnings -->
+    <div class="col-md-4">
+        <div class="card p-4 h-100" style="background-color: #ffff00; border: 3px solid #000;">
+            <p class="text-uppercase fw-bold mb-1" style="color: #444; font-size: 0.8rem; letter-spacing: 1px;">Total
+                Earnings</p>
+            <h2 class="fw-black m-0" style="font-size: 3rem;">₹{{ total_earnings|floatformat:"0" }}</h2>
+        </div>
+    </div>
+
+    <!-- Rating -->
+    <div class="col-md-4">
+        <div class="card p-4 h-100" style="background-color: #ccccff; border: 3px solid #000;">
+            <p class="text-uppercase fw-bold mb-1" style="color: #444; font-size: 0.8rem; letter-spacing: 1px;">Current
+                Rating</p>
+            <h2 class="fw-black m-0" style="font-size: 3rem;">{{ avg_rating }} <span style="font-size: 2rem;">⭐</span>
+            </h2>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Recent Activity Feed -->
+    <div class="col-md-8">
+        <h4 class="fw-bold mb-3" style="letter-spacing: -0.5px;">⚡ Recent Activity</h4>
+        <div class="card p-0" style="border: 3px solid #000; overflow: hidden;">
+            {% if recent_activity %}
+            {% for activity in recent_activity %}
+            <div class="d-flex justify-content-between align-items-center p-3"
+                style="border-bottom: 2px solid #000; {% if forloop.last %}border-bottom: none;{% endif %} background-color: #fff; transition: background 0.1s;"
+                onmouseover="this.style.backgroundColor='#fafafa'" onmouseout="this.style.backgroundColor='#fff'">
+                <div>
+                    <h6 class="fw-bold mb-1">Booking #{{ activity.id }} - {{ activity.status }}</h6>
+                    <small class="text-muted">with {{ activity.user.get_full_name|default:activity.user.username }} for
+                        {{ activity.date|date:"M d" }}</small>
+                </div>
+                {% if activity.status == 'Pending' %}
+                <span class="badge" style="background: #ffff00; color: #000; border: 2px solid #000;">Action
+                    Required</span>
+                {% elif activity.status == 'Completed' or activity.status == 'Accepted' %}
+                <span class="badge" style="background: #d4fcd4; color: #000; border: 2px solid #000;">Active/Done</span>
+                {% else %}
+                <span class="badge" style="background: #ccc; color: #000; border: 2px solid #000;">{{ activity.status
+                    }}</span>
+                {% endif %}
+            </div>
+            {% endfor %}
+            {% else %}
+            <div class="p-4 text-center text-muted">No recent activity found. Hang tight!</div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Quick Actions Panel -->
+    <div class="col-md-4">
+        <h4 class="fw-bold mb-3" style="letter-spacing: -0.5px;">🛠️ Quick Actions</h4>
+        <div class="d-flex flex-column gap-3">
+            <a href="{% url 'provider_dashboard' %}" class="btn btn-dark text-start w-100 fs-5 pb-2 pt-2"
+                style="border: 3px solid #000; box-shadow: 6px 6px 0px 0px #000;">
+                <span style="font-size: 1.5rem; margin-right: 8px;">📋</span> Manage Bookings
+            </a>
+            <a href="{% url 'profile' %}" class="btn btn-dark text-start w-100 fs-5 pb-2 pt-2"
+                style="background: #fff; color: #000; border: 3px solid #000; box-shadow: 6px 6px 0px 0px #000;">
+                <span style="font-size: 1.5rem; margin-right: 8px;">👤</span> Edit Profile
+            </a>
+            <a href="{% url 'feedback' %}" class="btn btn-dark text-start w-100 fs-5 pb-2 pt-2"
+                style="background: #ffaaaa; color: #000; border: 3px solid #000; box-shadow: 6px 6px 0px 0px #000;">
+                <span style="font-size: 1.5rem; margin-right: 8px;">📣</span> Report an Issue
+            </a>
+        </div>
+    </div>
 </div>
 {% endif %}
 
@@ -1215,6 +1294,32 @@
     document.addEventListener('DOMContentLoaded', () => {
         const sections = document.querySelectorAll('section[id]');
         const navLinks = document.querySelectorAll('.crypko-hanging-nav a');
+        const logo = document.querySelector('.crypko-brand');
+        const darkSections = document.querySelectorAll('.bg-black, .ed-footer');
+
+        // Logo color inversion script
+        window.addEventListener('scroll', () => {
+            if (!logo) return;
+
+            let isOverDark = false;
+            // Get the logo's vertical center position
+            const logoRect = logo.getBoundingClientRect();
+            const logoCenterY = logoRect.top + (logoRect.height / 2);
+
+            darkSections.forEach(sec => {
+                const rect = sec.getBoundingClientRect();
+                // Check if the logo center is within the section bounds
+                if (logoCenterY >= rect.top && logoCenterY <= rect.bottom) {
+                    isOverDark = true;
+                }
+            });
+
+            if (isOverDark) {
+                logo.style.color = 'var(--ed-white)';
+            } else {
+                logo.style.color = 'var(--ed-black)';
+            }
+        });
 
         // Scroll spy to turn links red as you scroll down
         const observerOptions = {

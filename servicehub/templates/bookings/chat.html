@@ -5,73 +5,217 @@
 
 {% block content %}
 <style>
+    /* Neo-Brutalist Rounded Chat UI */
+    .chat-container {
+        scrollbar-width: thin;
+        scrollbar-color: #000 transparent;
+    }
+
+    .chat-container::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .chat-container::-webkit-scrollbar-thumb {
+        background-color: #000;
+        border-radius: 10px;
+        border: 2px solid #fff;
+    }
+
+    .chat-card {
+        background: #ffffff;
+        border: 3px solid #000;
+        border-radius: 28px;
+        box-shadow: 8px 8px 0px 0px rgba(0, 0, 0, 1);
+        overflow: hidden;
+        transition: all 0.2s ease-in-out;
+    }
+
+    .chat-header {
+        background: #fffbea;
+        border-bottom: 3px solid #000;
+        padding: 1.2rem 1.5rem;
+    }
+
+    .chat-bubble {
+        padding: 14px 22px;
+        border-radius: 24px;
+        border: 3px solid #000;
+        box-shadow: 4px 4px 0px 0px rgba(0, 0, 0, 1);
+        font-weight: 700;
+        font-size: 0.95rem;
+        word-wrap: break-word;
+        max-width: 75%;
+        margin-bottom: 4px;
+        color: #000;
+    }
+
     .chat-bubble-user {
-        background: #4F46E5;
-        color: white;
-        border-bottom-right-radius: 4px !important;
+        background: #d4fcd4;
+        /* vibrant green */
+        border-bottom-right-radius: 6px;
+        align-self: flex-end;
     }
 
     .chat-bubble-other {
-        background: white;
-        border-bottom-left-radius: 4px !important;
+        background: #ffffff;
+        border-bottom-left-radius: 6px;
+        align-self: flex-start;
+    }
+
+    .chat-timestamp {
+        font-size: 0.75rem;
+        font-weight: 800;
+        color: #000;
+        margin-top: 6px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .chat-input-wrapper {
+        background: #ffffff;
+        border-top: 3px solid #000;
+        padding: 1.2rem;
+    }
+
+    .chat-input {
+        border: 3px solid #000 !important;
+        border-radius: 50px !important;
+        padding: 14px 24px !important;
+        font-weight: 700;
+        box-shadow: 4px 4px 0px 0px rgba(0, 0, 0, 1) !important;
+        background: #fff !important;
+        color: #000 !important;
+        transition: all 0.2s;
+    }
+
+    .chat-input:focus {
+        background: #fffbea !important;
+        box-shadow: 6px 6px 0px 0px rgba(0, 0, 0, 1) !important;
+        transform: translate(-2px, -2px);
+    }
+
+    .chat-btn {
+        border-radius: 50px !important;
+        width: 60px;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #ffff00 !important;
+        border: 3px solid #000 !important;
+        color: #000 !important;
+        font-size: 1.5rem;
+        font-weight: 900;
+        box-shadow: 5px 5px 0px 0px rgba(0, 0, 0, 1) !important;
+        transition: all 0.2s;
+    }
+
+    .chat-btn:hover {
+        transform: translate(-2px, -2px);
+        box-shadow: 7px 7px 0px 0px rgba(0, 0, 0, 1) !important;
+        background: #ffdb00 !important;
+    }
+
+    .chat-btn:active {
+        transform: translate(3px, 3px);
+        box-shadow: 2px 2px 0px 0px rgba(0, 0, 0, 1) !important;
+    }
+
+    .back-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background: #ffffff;
+        border: 3px solid #000;
+        color: #000;
+        box-shadow: 3px 3px 0px 0px rgba(0, 0, 0, 1);
+        text-decoration: none;
+        transition: all 0.2s;
+    }
+
+    .back-btn:hover {
+        background: #ffaaaa;
+        transform: translate(-2px, -2px);
+        box-shadow: 5px 5px 0px 0px rgba(0, 0, 0, 1);
+        color: #000;
+    }
+
+    .badge-live {
+        background: #000;
+        color: #fff;
+        font-weight: 900;
+        padding: 8px 16px;
+        font-size: 0.8rem;
+        border-radius: 50px;
+        border: 2px solid #000;
+        letter-spacing: 1px;
     }
 </style>
-<div class="row min-vh-100 align-items-center justify-content-center py-5">
-    <div class="col-12 col-lg-8">
 
-        <div class="card border-0 shadow-lg rounded-4 overflow-hidden"
-            style="background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px);">
+<div class="row align-items-center justify-content-center py-4">
+    <div class="col-12 col-lg-8 col-xl-7">
+
+        <div class="chat-card d-flex flex-column" style="height: 80vh;">
             <!-- Chat Header -->
-            <div class="card-header bg-white border-bottom py-3 d-flex align-items-center justify-content-between">
+            <div class="chat-header d-flex align-items-center justify-content-between">
                 <div class="d-flex align-items-center gap-3">
                     <a href="{% if user == booking.user %}{% url 'user_dashboard' %}{% else %}{% url 'provider_dashboard' %}{% endif %}"
-                        class="btn btn-light rounded-circle shadow-sm">
-                        <i class="bi bi-arrow-left"></i>
+                        class="back-btn">
+                        <i class="bi bi-arrow-left" style="font-size: 1.2rem; -webkit-text-stroke: 1px;"></i>
                     </a>
                     <div>
-                        <h5 class="mb-0 fw-bold">
+                        <h5 class="mb-0 fw-bold text-uppercase"
+                            style="color: #000; font-size: 1.2rem; letter-spacing: -0.01em;">
                             {% if user == booking.user %}
-                            {{
-                            booking.service_provider.user.get_full_name|default:booking.service_provider.user.username
-                            }}
+                            {% with sp_user=booking.service_provider.user %}
+                            {{ sp_user.get_full_name|default:sp_user.username }}
+                            {% endwith %}
                             {% else %}
                             {{ booking.user.get_full_name|default:booking.user.username }}
                             {% endif %}
                         </h5>
-                        <small class="text-muted">Booking #{{ booking.id }}</small>
+                        <small style="font-weight: 700; color: #444;">BOOKING #{{ booking.id }}</small>
                     </div>
                 </div>
-                <span class="badge bg-primary rounded-pill px-3 py-2 shadow-sm">Chat</span>
+                <span class="badge badge-live">CHATTING</span>
             </div>
 
             <!-- Chat Messages Area -->
-            <div class="card-body bg-light" id="chat-window" style="height: 60vh; overflow-y: auto;">
+            <div class="card-body chat-container d-flex flex-column px-4 py-4" id="chat-window"
+                style="flex: 1; overflow-y: auto; background: #fafafa;">
                 {% for message in messages %}
                 <div
                     class="d-flex flex-column mb-3 {% if message.sender == user %}align-items-end{% else %}align-items-start{% endif %}">
-                    <div class="px-4 py-2 rounded-4 shadow-sm text-break {% if message.sender == user %}chat-bubble-user{% else %}chat-bubble-other{% endif %}"
-                        style="max-width: 75%;">
+                    <div
+                        class="chat-bubble {% if message.sender == user %}chat-bubble-user{% else %}chat-bubble-other{% endif %}">
                         {{ message.content }}
                     </div>
-                    <small class="text-muted mt-1" style="font-size: 0.75rem;">{{ message.timestamp|date:"M d, Y, h:i A"
-                        }}</small>
+                    <div class="chat-timestamp">{{ message.timestamp|date:"h:i A" }}</div>
                 </div>
                 {% empty %}
-                <div id="no-messages-alert" class="text-center text-muted my-5">
-                    <i class="bi bi-chat-dots fs-1 mb-3"></i>
-                    <p>No messages yet. Start the conversation!</p>
+                <div id="no-messages-alert"
+                    class="w-100 h-100 d-flex flex-column align-items-center justify-content-center text-muted gap-3">
+                    <div
+                        style="background: #ffffff; border-radius: 50%; width: 80px; height: 80px; display: flex; align-items: center; justify-content: center; box-shadow: 6px 6px 0px rgba(0,0,0,1); border: 3px solid #000;">
+                        <i class="bi bi-chat-dots-fill" style="font-size: 2rem; color: #000;"></i>
+                    </div>
+                    <p style="font-weight: 800; color: #000; font-size: 1.1rem; text-transform: uppercase;">No messages
+                        yet. Send one!</p>
                 </div>
                 {% endfor %}
             </div>
 
             <!-- Chat Input Area -->
-            <div class="card-footer bg-white border-top py-3">
-                <form id="chat-form" class="d-flex gap-2">
-                    <input type="text" id="chat-message-input" class="form-control rounded-pill px-4"
-                        placeholder="Type a message..." required autocomplete="off">
-                    <button type="submit" id="chat-message-submit" class="btn shadow-sm"
-                        style="border-radius: 50%; width: 46px; height: 46px; padding: 0; display: flex; align-items: center; justify-content: center; background: white; border: 2px solid black; color: black !important; font-size: 1.2rem; font-weight: 900;">
-                        ➔
+            <div class="chat-input-wrapper">
+                <form id="chat-form" class="d-flex gap-3 align-items-center m-0">
+                    <input type="text" id="chat-message-input" class="form-control chat-input"
+                        placeholder="Type your message..." required autocomplete="off">
+                    <button type="submit" id="chat-message-submit" class="btn chat-btn flex-shrink-0"
+                        title="Send message">
+                        <i class="bi bi-send-fill" style="margin-left: -2px;"></i>
                     </button>
                 </form>
             </div>
@@ -112,10 +256,10 @@
         const bubbleClass = isCurrentUser ? 'chat-bubble-user' : 'chat-bubble-other';
 
         messageDiv.innerHTML = `
-            <div class="px-4 py-2 rounded-4 shadow-sm text-break ${bubbleClass}" style="max-width: 75%;">
+            <div class="chat-bubble ${bubbleClass}">
                 ${data.message}
             </div>
-            <small class="text-muted mt-1" style="font-size: 0.75rem;">${data.timestamp}</small>
+            <div class="chat-timestamp">${data.timestamp}</div>
         `;
 
         chatWindow.appendChild(messageDiv);

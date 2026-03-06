@@ -61,16 +61,18 @@
         /* ── Sidebar ── */
         .sidebar {
             width: var(--sidebar-w);
-            height: 100vh;
+            height: calc(100vh - 48px);
             background-color: var(--surface);
             position: fixed;
-            top: 0;
-            left: 0;
+            top: 24px;
+            left: 24px;
             padding: 0;
             z-index: 200;
             display: flex;
             flex-direction: column;
-            border-right: var(--brutal-border);
+            border: var(--brutal-border);
+            border-radius: 16px;
+            box-shadow: var(--brutal-shadow);
             overflow: hidden;
         }
 
@@ -119,13 +121,15 @@
             font-weight: 700;
             text-transform: uppercase;
             border: 2px solid transparent;
-            border-radius: var(--brutal-radius);
+            border-radius: 8px;
+            /* Soft rounding for links */
             transition: all 0.2s;
             margin-bottom: 4px;
         }
 
         .sidebar a:hover {
-            background: #e0e0e0;
+            background: #d4fcd4;
+            /* Light green hover matching modern neo-brutal */
             border: 2px solid var(--dark);
             box-shadow: 3px 3px 0 var(--dark);
             transform: translate(-3px, -3px);
@@ -165,7 +169,7 @@
         }
 
         .has-sidebar .main-content {
-            margin-left: var(--sidebar-w);
+            margin-left: calc(var(--sidebar-w) + 48px);
         }
 
         /* ── Brutalist Card ── */
@@ -374,12 +378,12 @@
         </div>
 
         <div class="sidebar-nav">
+            <a href="{% url 'home' %}">🏠 &nbsp;Home</a>
             {% if user.role == 'provider' %}
             <a href="{% url 'provider_dashboard' %}">📋 &nbsp;Dashboard</a>
             {% else %}
             <a href="{% url 'user_dashboard' %}">📅 &nbsp;My Bookings</a>
             {% endif %}
-            <a href="{% url 'home' %}">🏠 &nbsp;Home</a>
             <a href="{% url 'feedback' %}">📩 &nbsp;Feedback</a>
         </div>
 

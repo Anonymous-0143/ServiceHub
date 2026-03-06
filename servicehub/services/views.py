@@ -7,12 +7,41 @@ from django.contrib import messages
 from .forms import FeedbackForm, ReviewForm
 from django.core.mail import send_mail
 from django.conf import settings
-from django.db.models import Avg, Count
+from django.db.models import Avg, Count, Sum
 
 
 def home(request):
     categories = Category.objects.all()
-    return render(request, 'home.html', {'categories': categories})
+    context = {'categories': categories}
+
+    if request.user.is_authenticated and request.user.role == 'provider':
+        try:
+            provider = ProviderProfile.objects.get(user=request.user)
+            
+            # 1. Active Jobs (Pending or Accepted)
+            active_jobs = Booking.objects.filter(service_provider=provider, status__in=['Pending', 'Accepted']).count()
+            
+            # 2. Total Earnings
+            earnings_agg = Booking.objects.filter(service_provider=provider, payment_status='Paid').aggregate(total=Sum('total_amount'))
+            total_earnings = earnings_agg['total'] or 0.00
+            
+            # 3. Average Rating
+            stats = provider.reviews.aggregate(avg_rating=Avg('rating'))
+            avg_rating = stats['avg_rating'] or 0.0
+            
+            # 4. Recent Activity (Last 5 bookings)
+            recent_activity = Booking.objects.filter(service_provider=provider).order_by('-id')[:5]
+
+            context.update({
+                'active_jobs': active_jobs,
+                'total_earnings': total_earnings,
+                'avg_rating': round(avg_rating, 1),
+                'recent_activity': recent_activity
+            })
+        except ProviderProfile.DoesNotExist:
+            pass
+
+    return render(request, 'home.html', context)
 
 
 from geopy.geocoders import Nominatim
@@ -204,7 +233,7 @@ def cancel_booking(request, booking_id):
 @login_required
 def feedback_view(request):
     if request.method == 'POST':
-        form = FeedbackForm(request.POST)
+        form = FeedbackForm(request.POST, user=request.user)
         if form.is_valid():
             feedback_type = form.cleaned_data['feedback_type']
             subject = form.cleaned_data['subject']
@@ -230,7 +259,7 @@ def feedback_view(request):
             messages.success(request, "Your feedback has been sent to the admin. Thank you!")
             return redirect('feedback')
     else:
-        form = FeedbackForm()
+        form = FeedbackForm(user=request.user)
 
     return render(request, 'feedback.html', {'form': form})
 

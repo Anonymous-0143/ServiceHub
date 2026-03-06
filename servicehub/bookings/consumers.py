@@ -2,6 +2,7 @@ import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
 from .models import Booking, Message
+from django.utils.timezone import localtime
 
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -42,6 +43,9 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
         # Save message to database
         new_msg = await self.save_message(self.booking_id, sender_id, message)
+        
+        # Convert UTC to Local time matching template 'h:i A' format
+        local_time = localtime(new_msg.timestamp)
 
         # Send message to room group
         await self.channel_layer.group_send(
@@ -50,7 +54,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 'type': 'chat_message',
                 'message': message,
                 'sender': self.scope["user"].username,
-                'timestamp': new_msg.timestamp.strftime("%b %d, %Y, %I:%M %p")
+                'timestamp': local_time.strftime("%I:%M %p")
             }
         )
 

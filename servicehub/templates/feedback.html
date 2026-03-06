@@ -110,9 +110,8 @@
             <p class="sub">Let us know how we can improve. Your message goes directly to the admin team.</p>
 
             <div class="info-note">
-                Sending as <strong>{{ user.get_full_name|default:user.username }}</strong> ({{ user.email|default:"no
-                email
-                set" }})
+                Sending as <strong>{{ user.get_full_name|default:user.username }}</strong>
+                ({{ user.email|default:"no email set" }})
             </div>
 
             <form method="post">

@@ -196,15 +196,38 @@
             // 2. Create the GPS Button
             const gpsBtn = document.createElement('button');
             gpsBtn.type = 'button';
-            gpsBtn.className = 'btn btn-secondary';
-            gpsBtn.style.padding = '11px 16px';
-            gpsBtn.style.borderRadius = 'var(--clay-radius-sm)';
-            gpsBtn.style.border = 'none';
-            gpsBtn.style.background = '#e0e0e0';
-            gpsBtn.style.color = 'var(--dark)';
-            gpsBtn.style.fontWeight = '600';
-            gpsBtn.innerHTML = '📍 Auto';
-            gpsBtn.title = "Detect my city using GPS";
+            gpsBtn.className = 'btn-gps';
+            gpsBtn.style.padding = '0 24px';
+            gpsBtn.style.borderRadius = 'var(--brutal-radius)';
+            gpsBtn.style.border = 'var(--brutal-border)';
+            gpsBtn.style.background = '#ffff00';
+            gpsBtn.style.color = '#000';
+            gpsBtn.style.fontWeight = '900';
+            gpsBtn.style.fontSize = '1.1rem';
+            gpsBtn.style.cursor = 'pointer';
+            gpsBtn.style.boxShadow = 'var(--brutal-shadow)';
+            gpsBtn.style.transition = 'all 0.15s ease';
+            gpsBtn.style.display = 'flex';
+            gpsBtn.style.alignItems = 'center';
+            gpsBtn.style.justifyContent = 'center';
+            gpsBtn.innerHTML = '📍';
+            gpsBtn.title = "Auto-detect location";
+
+            // Hover/Active Effects
+            gpsBtn.addEventListener('mouseenter', () => {
+                gpsBtn.style.transform = 'translate(-2px, -2px)';
+                gpsBtn.style.boxShadow = 'var(--brutal-shadow-hover)';
+                gpsBtn.style.background = '#ffdb00';
+            });
+            gpsBtn.addEventListener('mouseleave', () => {
+                gpsBtn.style.transform = 'translate(0, 0)';
+                gpsBtn.style.boxShadow = 'var(--brutal-shadow)';
+                gpsBtn.style.background = '#ffff00';
+            });
+            gpsBtn.addEventListener('mousedown', () => {
+                gpsBtn.style.transform = 'translate(2px, 2px)';
+                gpsBtn.style.boxShadow = 'var(--brutal-shadow-active)';
+            });
 
             wrapper.appendChild(gpsBtn);
 
