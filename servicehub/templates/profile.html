@@ -175,4 +175,88 @@
     <button type="submit" class="btn-save">Save Changes</button>
 </form>
 
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Django automatically assigns IDs like 'id_fieldname'
+        const locationInput = document.getElementById('id_location');
+
+        if (locationInput) {
+            // 1. Wrap the input in a flex container so we can put a button next to it
+            const wrapper = document.createElement('div');
+            wrapper.style.display = 'flex';
+            wrapper.style.gap = '8px';
+
+            locationInput.parentNode.insertBefore(wrapper, locationInput);
+            wrapper.appendChild(locationInput);
+
+            // 2. Create the GPS Button
+            const gpsBtn = document.createElement('button');
+            gpsBtn.type = 'button';
+            gpsBtn.className = 'btn btn-secondary';
+            gpsBtn.style.padding = '11px 16px';
+            gpsBtn.style.borderRadius = 'var(--clay-radius-sm)';
+            gpsBtn.style.border = 'none';
+            gpsBtn.style.background = '#e0e0e0';
+            gpsBtn.style.color = 'var(--dark)';
+            gpsBtn.style.fontWeight = '600';
+            gpsBtn.innerHTML = '📍 Auto';
+            gpsBtn.title = "Detect my city using GPS";
+
+            wrapper.appendChild(gpsBtn);
+
+            // 3. Attach the Click Logic
+            gpsBtn.addEventListener('click', function () {
+                if ("geolocation" in navigator) {
+
+                    // Loading UI
+                    const originalText = gpsBtn.innerHTML;
+                    gpsBtn.innerHTML = '⏳...';
+                    gpsBtn.disabled = true;
+
+                    navigator.geolocation.getCurrentPosition(
+                        function (position) {
+                            const lat = position.coords.latitude;
+                            const lon = position.coords.longitude;
+
+                            // AJAX fetch to our new Django API Endpoint
+                            fetch(`/api/geocode/?lat=${lat}&lon=${lon}`)
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.location) {
+                                        locationInput.value = data.location;
+                                    } else {
+                                        alert("Could not determine your city from coordinates.");
+                                    }
+                                })
+                                .catch(err => {
+                                    console.error(err);
+                                    alert("An error occurred during reverse geocoding.");
+                                })
+                                .finally(() => {
+                                    // Restore UI
+                                    gpsBtn.innerHTML = originalText;
+                                    gpsBtn.disabled = false;
+                                });
+
+                        },
+                        function (error) {
+                            console.error("GPS error:", error);
+                            alert("Could not access your location. Please grant permission.");
+                            gpsBtn.innerHTML = originalText;
+                            gpsBtn.disabled = false;
+                        },
+                        {
+                            enableHighAccuracy: true,
+                            timeout: 10000,
+                            maximumAge: 0
+                        }
+                    );
+                } else {
+                    alert("Geolocation is not supported by your browser");
+                }
+            });
+        }
+    });
+</script>
+
 {% endblock %}

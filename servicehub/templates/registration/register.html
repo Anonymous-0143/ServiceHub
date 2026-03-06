@@ -16,11 +16,12 @@
 
     .auth-card {
         background: var(--surface);
-        border-radius: var(--clay-radius);
+        border: var(--brutal-border);
+        border-radius: var(--brutal-radius);
         padding: 48px 44px;
         width: 100%;
         max-width: 500px;
-        box-shadow: var(--clay-shadow);
+        box-shadow: var(--brutal-shadow);
     }
 
     .auth-logo {
@@ -59,8 +60,9 @@
 
     .auth-card .form-control,
     .auth-card select {
-        border-radius: var(--clay-radius-sm);
-        border: 2px solid var(--border);
+        border-radius: var(--brutal-radius);
+        border: var(--brutal-border);
+        box-shadow: 3px 3px 0 var(--border);
         padding: 11px 14px;
         font-size: 0.92rem;
         background: #fafafa;
@@ -98,26 +100,29 @@
         width: 100%;
         background: var(--dark);
         color: white;
-        border: none;
-        border-radius: var(--clay-radius-sm);
+        border: var(--brutal-border);
+        border-radius: var(--brutal-radius);
         padding: 13px;
         font-size: 0.95rem;
-        font-weight: 700;
+        font-weight: 800;
+        text-transform: uppercase;
         cursor: pointer;
-        box-shadow: 0 4px 0 rgba(0, 0, 0, 0.35), 0 8px 24px rgba(0, 0, 0, 0.12);
-        transition: all 0.15s;
-        letter-spacing: 0.2px;
+        box-shadow: var(--brutal-shadow);
+        transition: all 0.1s;
+        letter-spacing: 1px;
         margin-top: 8px;
     }
 
     .btn-auth:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 0 rgba(0, 0, 0, 0.35), 0 14px 30px rgba(0, 0, 0, 0.15);
+        transform: translate(-3px, -3px);
+        box-shadow: var(--brutal-shadow-hover);
+        background: var(--dark);
+        color: white;
     }
 
     .btn-auth:active {
-        transform: translateY(2px);
-        box-shadow: 0 2px 0 rgba(0, 0, 0, 0.35);
+        transform: translate(3px, 3px);
+        box-shadow: var(--brutal-shadow-active);
     }
 
     .auth-link {
@@ -173,4 +178,89 @@
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Django automatically assigns IDs like 'id_fieldname'
+        const locationInput = document.getElementById('id_location');
+
+        if (locationInput) {
+            // 1. Wrap the input in a flex container so we can put a button next to it
+            const wrapper = document.createElement('div');
+            wrapper.style.display = 'flex';
+            wrapper.style.gap = '8px';
+
+            locationInput.parentNode.insertBefore(wrapper, locationInput);
+            wrapper.appendChild(locationInput);
+
+            // 2. Create the GPS Button
+            const gpsBtn = document.createElement('button');
+            gpsBtn.type = 'button';
+            gpsBtn.className = 'btn btn-secondary';
+            gpsBtn.style.padding = '11px 16px';
+            gpsBtn.style.borderRadius = 'var(--clay-radius-sm)';
+            gpsBtn.style.border = 'none';
+            gpsBtn.style.background = '#e0e0e0';
+            gpsBtn.style.color = 'var(--dark)';
+            gpsBtn.style.fontWeight = '600';
+            gpsBtn.innerHTML = '📍 Auto';
+            gpsBtn.title = "Detect my city using GPS";
+
+            wrapper.appendChild(gpsBtn);
+
+            // 3. Attach the Click Logic
+            gpsBtn.addEventListener('click', function () {
+                if ("geolocation" in navigator) {
+
+                    // Loading UI
+                    const originalText = gpsBtn.innerHTML;
+                    gpsBtn.innerHTML = '⏳...';
+                    gpsBtn.disabled = true;
+
+                    navigator.geolocation.getCurrentPosition(
+                        function (position) {
+                            const lat = position.coords.latitude;
+                            const lon = position.coords.longitude;
+
+                            // AJAX fetch to our new Django API Endpoint
+                            fetch(`/api/geocode/?lat=${lat}&lon=${lon}`)
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.location) {
+                                        locationInput.value = data.location;
+                                    } else {
+                                        alert("Could not determine your city from coordinates.");
+                                    }
+                                })
+                                .catch(err => {
+                                    console.error(err);
+                                    alert("An error occurred during reverse geocoding.");
+                                })
+                                .finally(() => {
+                                    // Restore UI
+                                    gpsBtn.innerHTML = originalText;
+                                    gpsBtn.disabled = false;
+                                });
+
+                        },
+                        function (error) {
+                            console.error("GPS error:", error);
+                            alert("Could not access your location. Please grant permission.");
+                            gpsBtn.innerHTML = originalText;
+                            gpsBtn.disabled = false;
+                        },
+                        {
+                            enableHighAccuracy: true,
+                            timeout: 10000,
+                            maximumAge: 0
+                        }
+                    );
+                } else {
+                    alert("Geolocation is not supported by your browser");
+                }
+            });
+        }
+    });
+</script>
+
 {% endblock %}

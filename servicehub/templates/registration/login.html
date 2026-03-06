@@ -16,11 +16,12 @@
 
     .auth-card {
         background: var(--surface);
-        border-radius: var(--clay-radius);
+        border: var(--brutal-border);
+        border-radius: var(--brutal-radius);
         padding: 48px 44px;
         width: 100%;
         max-width: 420px;
-        box-shadow: var(--clay-shadow);
+        box-shadow: var(--brutal-shadow);
     }
 
     .auth-logo {
@@ -58,32 +59,37 @@
     }
 
     .auth-card .form-control {
-        border-radius: var(--clay-radius-sm);
+        border-radius: var(--brutal-radius);
+        border: var(--brutal-border);
+        box-shadow: 3px 3px 0 var(--border);
     }
 
     .btn-auth {
         width: 100%;
         background: var(--dark);
         color: white;
-        border: none;
-        border-radius: var(--clay-radius-sm);
+        border: var(--brutal-border);
+        border-radius: var(--brutal-radius);
         padding: 13px;
         font-size: 0.95rem;
-        font-weight: 700;
+        font-weight: 800;
+        text-transform: uppercase;
         cursor: pointer;
-        box-shadow: 0 4px 0 rgba(0, 0, 0, 0.35), 0 8px 24px rgba(0, 0, 0, 0.12);
-        transition: all 0.15s;
-        letter-spacing: 0.2px;
+        box-shadow: var(--brutal-shadow);
+        transition: all 0.1s;
+        letter-spacing: 1px;
     }
 
     .btn-auth:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 0 rgba(0, 0, 0, 0.35), 0 14px 30px rgba(0, 0, 0, 0.15);
+        transform: translate(-3px, -3px);
+        box-shadow: var(--brutal-shadow-hover);
+        background: var(--dark);
+        color: white;
     }
 
     .btn-auth:active {
-        transform: translateY(2px);
-        box-shadow: 0 2px 0 rgba(0, 0, 0, 0.35);
+        transform: translate(3px, 3px);
+        box-shadow: var(--brutal-shadow-active);
     }
 
     .auth-link {

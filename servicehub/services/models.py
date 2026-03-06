@@ -40,6 +40,23 @@ class Booking(models.Model):
     time = models.TimeField()
     address = models.TextField()
     status = models.CharField(max_length=20, default="Pending")
+    
+    # Razorpay Payment Fields
+    total_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    razorpay_order_id = models.CharField(max_length=100, blank=True, null=True)
+    payment_status = models.CharField(max_length=20, default='Pending')
 
     def __str__(self):
         return f"{self.user.username} - {self.status}"
+
+
+class Review(models.Model):
+    booking = models.OneToOneField(Booking, on_delete=models.CASCADE, related_name='review')
+    reviewer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    provider = models.ForeignKey(ProviderProfile, on_delete=models.CASCADE, related_name='reviews')
+    rating = models.IntegerField()  # 1–5
+    comment = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.reviewer.username} → {self.provider.user.username} ({self.rating}★)"

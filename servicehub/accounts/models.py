@@ -9,4 +9,5 @@ class User(AbstractUser):
     )
     role = models.CharField(max_length=20, choices=ROLE_CHOICES)
     phone = models.CharField(max_length=15)
+    location = models.CharField(max_length=200, blank=True, null=True)
 

@@ -21,6 +21,7 @@ from accounts import views as accounts_views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('services.urls')),
+    path('bookings/', include('bookings.urls')),
     path('accounts/logout/', accounts_views.logout_view, name='logout'),
     path('accounts/', include('django.contrib.auth.urls')),
     path('accounts/register/', accounts_views.choose_role, name='register'),

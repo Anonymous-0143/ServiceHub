@@ -1,6 +1,6 @@
 from django.urls import path
-from .views import book_provider
+from .views import chat_room
 
 urlpatterns = [
-    path('book/<int:provider_id>/', book_provider, name='book_provider'),
+    path('chat/<int:booking_id>/', chat_room, name='chat_room'),
 ]

@@ -1,32 +1,26 @@
 from django.db import models
 from django.conf import settings
+from services.models import Booking
+
 # Create your models here.
 
-class Booking(models.Model):
-    STATUS_CHOICES = (
-        ('Pending', 'Pending'),
-        ('Accepted', 'Accepted'),
-        ('Completed', 'Completed'),
-        ('Cancelled', 'Cancelled'),
+class Message(models.Model):
+    booking = models.ForeignKey(
+        Booking,
+        on_delete=models.CASCADE,
+        related_name='messages'
     )
-
-    customer = models.ForeignKey(
+    sender = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-        related_name='customer_bookings'
+        related_name='messages'
     )
+    content = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True)
 
-    provider = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        related_name='provider_bookings'
-    )
-
-    date = models.DateField()
-    time = models.TimeField()
-    address = models.TextField()
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Pending')
-    created_at = models.DateTimeField(auto_now_add=True)
+    class Meta:
+        ordering = ('timestamp',)
 
     def __str__(self):
-        return f"{self.customer.username} -> {self.provider.username}"
+        return f"Message {self.id} by {self.sender.username} on Booking {self.booking.id}"
+

@@ -6,36 +6,45 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ServiceHub</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+    <link
+        href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Outfit:wght@100..900&display=swap"
         rel="stylesheet">
     <style>
-        /* ── Clay Design Tokens ── */
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&family=Tektur:wght@400..900&display=swap');
+
+        .outfit-regular {
+            font-family: "Outfit", sans-serif;
+            font-optical-sizing: auto;
+            font-weight: 400;
+            font-style: normal;
+        }
+
+        .tektur-regular {
+            font-family: "Tektur", sans-serif;
+            font-optical-sizing: auto;
+            font-weight: 400;
+            font-style: normal;
+            font-variation-settings: "wdth" 100;
+        }
+
+        /* ── Neo-Brutalism Design Tokens ── */
         :root {
-            --bg: #e4e4e4;
+            --bg: #ffffff;
             --surface: #ffffff;
-            --dark: #1a1a1a;
-            --dark2: #2e2e2e;
+            --dark: #000000;
+            --dark2: #111111;
             --mid: #555555;
             --muted: #888888;
-            --border: #d0d0d0;
+            --border: #000000;
             --sidebar-w: 248px;
 
-            /* Clay shadow — layered for the puffy inflated look */
-            --clay-shadow:
-                0 2px 0 rgba(0, 0, 0, 0.06),
-                0 8px 20px rgba(0, 0, 0, 0.08),
-                0 24px 48px rgba(0, 0, 0, 0.05),
-                inset 0 -3px 0 rgba(0, 0, 0, 0.08),
-                inset 0 1px 0 rgba(255, 255, 255, 0.85);
+            /* Brutalist shadow — solid, sharp, offset */
+            --brutal-shadow: 6px 6px 0px 0px #000000;
+            --brutal-shadow-hover: 8px 8px 0px 0px #000000;
+            --brutal-shadow-active: 2px 2px 0px 0px #000000;
 
-            --clay-shadow-dark:
-                0 2px 0 rgba(0, 0, 0, 0.3),
-                0 8px 24px rgba(0, 0, 0, 0.25),
-                inset 0 -3px 0 rgba(0, 0, 0, 0.3),
-                inset 0 1px 0 rgba(255, 255, 255, 0.08);
-
-            --clay-radius: 22px;
-            --clay-radius-sm: 14px;
+            --brutal-border: 3px solid #000000;
+            --brutal-radius: 0px;
         }
 
         * {
@@ -53,7 +62,7 @@
         .sidebar {
             width: var(--sidebar-w);
             height: 100vh;
-            background-color: var(--dark);
+            background-color: var(--surface);
             position: fixed;
             top: 0;
             left: 0;
@@ -61,14 +70,14 @@
             z-index: 200;
             display: flex;
             flex-direction: column;
-            box-shadow: var(--clay-shadow-dark);
-            border-radius: 0 var(--clay-radius) var(--clay-radius) 0;
+            border-right: var(--brutal-border);
             overflow: hidden;
         }
 
         .sidebar-brand {
             padding: 28px 24px 20px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+            border-bottom: var(--brutal-border);
+            background-color: var(--dark);
         }
 
         .sidebar-brand .logo-icon {
@@ -81,69 +90,96 @@
             color: #ffffff;
             font-weight: 800;
             font-size: 1.1rem;
+            text-transform: uppercase;
             margin: 0;
-            letter-spacing: -0.3px;
+            letter-spacing: 1px;
         }
 
         .sidebar-brand p {
-            color: #666;
+            color: #ccc;
             font-size: 0.75rem;
             margin: 2px 0 0;
+            text-transform: uppercase;
         }
 
         .sidebar-nav {
             padding: 16px 12px;
             flex: 1;
+            background: var(--surface);
         }
 
         .sidebar a {
-            color: #aaaaaa;
+            color: var(--dark);
             display: flex;
             align-items: center;
             gap: 10px;
             padding: 11px 14px;
             text-decoration: none;
-            font-size: 0.9rem;
-            font-weight: 500;
-            border-radius: var(--clay-radius-sm);
+            font-size: 0.95rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            border: 2px solid transparent;
+            border-radius: var(--brutal-radius);
             transition: all 0.2s;
             margin-bottom: 4px;
         }
 
         .sidebar a:hover {
-            background: rgba(255, 255, 255, 0.07);
-            color: #ffffff;
+            background: #e0e0e0;
+            border: 2px solid var(--dark);
+            box-shadow: 3px 3px 0 var(--dark);
+            transform: translate(-3px, -3px);
         }
 
         .sidebar-footer {
             padding: 16px 12px 24px;
-            border-top: 1px solid rgba(255, 255, 255, 0.07);
+            border-top: var(--brutal-border);
+            background: var(--surface);
         }
 
         .sidebar-footer a {
-            color: #666 !important;
+            color: var(--dark) !important;
         }
 
         .sidebar-footer a:hover {
-            color: #ff6b6b !important;
-            background: rgba(255, 107, 107, 0.08) !important;
+            background: #ffaaaa !important;
+            border: 2px solid var(--dark);
+            box-shadow: 3px 3px 0 var(--dark);
+            transform: translate(-3px, -3px);
         }
 
         /* ── Main content ── */
         .main-content {
             padding: 36px 32px;
+            animation: slideUpFade 0.7s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+            animation-delay: 0.1s;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        @keyframes slideUpFade {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .has-sidebar .main-content {
             margin-left: var(--sidebar-w);
         }
 
-        /* ── Clay Card ── */
+        /* ── Brutalist Card ── */
         .card {
             background: var(--surface);
-            border: none;
-            border-radius: var(--clay-radius);
-            box-shadow: var(--clay-shadow);
+            border: var(--brutal-border);
+            border-radius: var(--brutal-radius);
+            box-shadow: var(--brutal-shadow);
+            transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.2s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .card:hover {
+            transform: translate(-4px, -4px);
+            box-shadow: 10px 10px 0 0 #000000;
         }
 
         /* ── Status colours (grey-scale) ── */
@@ -171,96 +207,162 @@
         /* ── Form Controls ── */
         .form-control,
         .form-select {
-            border-radius: var(--clay-radius-sm);
-            border: 2px solid var(--border);
+            border-radius: var(--brutal-radius);
+            border: var(--brutal-border);
             padding: 11px 14px;
-            font-size: 0.92rem;
-            background: #fafafa;
-            box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.04);
-            transition: all 0.2s;
+            font-size: 0.95rem;
+            background: #ffffff;
+            box-shadow: 3px 3px 0 var(--border);
+            transition: all 0.1s;
             color: var(--dark);
+            font-weight: 500;
         }
 
         .form-control:focus,
         .form-select:focus {
-            border-color: var(--dark);
-            background: var(--surface);
-            box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.04), 0 0 0 3px rgba(0, 0, 0, 0.06);
+            background: #fffbea;
+            /* slight yellow tint on focus */
             outline: none;
+            box-shadow: 4px 4px 0 var(--dark);
+            transform: translate(-1px, -1px);
         }
 
         /* ── Buttons ── */
         .btn-dark {
             background: var(--dark);
-            color: white;
-            border: none;
-            border-radius: var(--clay-radius-sm);
+            color: #ffffff;
+            border: var(--brutal-border);
+            border-radius: var(--brutal-radius);
             padding: 11px 22px;
-            font-weight: 600;
-            box-shadow: 0 4px 0 rgba(0, 0, 0, 0.3), 0 8px 20px rgba(0, 0, 0, 0.12);
-            transition: all 0.15s;
+            font-weight: 800;
+            text-transform: uppercase;
+            box-shadow: var(--brutal-shadow);
+            transition: all 0.1s;
+            letter-spacing: 1px;
         }
 
         .btn-dark:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 6px 0 rgba(0, 0, 0, 0.3), 0 12px 24px rgba(0, 0, 0, 0.15);
+            transform: translate(-2px, -2px);
+            box-shadow: var(--brutal-shadow-hover);
             background: var(--dark);
             color: white;
         }
 
         .btn-dark:active {
-            transform: translateY(2px);
-            box-shadow: 0 2px 0 rgba(0, 0, 0, 0.3);
+            transform: translate(4px, 4px);
+            box-shadow: var(--brutal-shadow-active);
         }
 
         /* ── Alerts ── */
         .alert {
-            border: none;
-            border-radius: var(--clay-radius-sm);
-            font-size: 0.9rem;
-            box-shadow: var(--clay-shadow);
+            border: var(--brutal-border);
+            border-radius: var(--brutal-radius);
+            font-size: 0.95rem;
+            font-weight: 700;
+            box-shadow: var(--brutal-shadow);
+            background: #fffbea;
+            color: var(--dark);
         }
 
         /* ── Top-right Profile Icon ── */
         .profile-icon {
             position: fixed;
-            top: 20px;
-            right: 24px;
+            top: 24px;
+            right: 32px;
             z-index: 300;
             width: 46px;
             height: 46px;
-            border-radius: 50%;
-            background: var(--dark);
-            color: #fff;
-            font-weight: 800;
-            font-size: 1.1rem;
+            border-radius: 0;
+            border: var(--brutal-border);
+            background: #ffff00;
+            color: var(--dark);
+            font-weight: 900;
+            font-size: 1.2rem;
             display: flex;
             align-items: center;
             justify-content: center;
             text-decoration: none;
-            box-shadow:
-                0 3px 0 rgba(0, 0, 0, 0.25),
-                0 6px 16px rgba(0, 0, 0, 0.12);
-            transition: all 0.15s ease;
+            box-shadow: var(--brutal-shadow);
+            transition: all 0.1s ease;
         }
 
         .profile-icon:hover {
-            transform: translateY(-2px) scale(1.05);
-            box-shadow:
-                0 5px 0 rgba(0, 0, 0, 0.25),
-                0 10px 24px rgba(0, 0, 0, 0.18);
-            color: #fff;
+            transform: translate(-2px, -2px);
+            box-shadow: var(--brutal-shadow-hover);
+            background: #ffdb00;
+            color: var(--dark);
         }
 
         .profile-icon:active {
-            transform: translateY(1px);
-            box-shadow: 0 2px 0 rgba(0, 0, 0, 0.25);
+            transform: translate(2px, 2px);
+            box-shadow: var(--brutal-shadow-active);
+        }
+
+        /* ── Global Loader ── */
+        .global-loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: var(--bg);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.6s cubic-bezier(0.85, 0, 0.15, 1);
+        }
+
+        .global-loader.hidden {
+            transform: translateY(-100%);
+        }
+
+        .loader-box {
+            font-family: 'Tektur', sans-serif;
+            font-size: 3rem;
+            font-weight: 900;
+            background: #ffff00;
+            color: var(--dark);
+            padding: 20px 40px;
+            border: var(--brutal-border);
+            box-shadow: 10px 10px 0 var(--dark);
+            animation: pulse-brutal 0.8s infinite alternate step-end;
+            text-transform: uppercase;
+        }
+
+        @keyframes pulse-brutal {
+            0% {
+                transform: scale(1) rotate(-3deg);
+                background: #ffff00;
+            }
+
+            33% {
+                transform: scale(1.05) rotate(2deg);
+                background: #ffaaaa;
+            }
+
+            66% {
+                transform: scale(0.95) rotate(-1deg);
+                background: #aaffaa;
+            }
+
+            100% {
+                transform: scale(1.1) rotate(3deg);
+                background: #ffaa00;
+            }
         }
     </style>
     {% block extra_head %}{% endblock %}
 </head>
 
 <body class="{% if user.is_authenticated %}has-sidebar{% endif %}">
+
+    <!-- Global Page Loader -->
+    <div id="global-loader" class="global-loader">
+        <div class="loader-box">
+            LOADING
+        </div>
+    </div>
 
     {% block sidebar %}
     {% if user.is_authenticated %}
@@ -278,6 +380,7 @@
             <a href="{% url 'user_dashboard' %}">📅 &nbsp;My Bookings</a>
             {% endif %}
             <a href="{% url 'home' %}">🏠 &nbsp;Home</a>
+            <a href="{% url 'feedback' %}">📩 &nbsp;Feedback</a>
         </div>
 
         <div class="sidebar-footer">
@@ -298,6 +401,17 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        window.addEventListener('load', function () {
+            const loader = document.getElementById('global-loader');
+            if (loader) {
+                // Small delay so users can appreciate the brutality
+                setTimeout(() => {
+                    loader.classList.add('hidden');
+                }, 400);
+            }
+        });
+    </script>
 </body>
 
 </html>

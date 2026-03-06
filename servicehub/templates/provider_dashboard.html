@@ -26,9 +26,10 @@
 
     .stat-pill {
         background: var(--surface);
-        border-radius: var(--clay-radius-sm);
+        border: var(--brutal-border);
+        border-radius: var(--brutal-radius);
         padding: 18px 24px;
-        box-shadow: var(--clay-shadow);
+        box-shadow: var(--brutal-shadow);
         flex: 1;
         min-width: 120px;
     }
@@ -53,22 +54,17 @@
     /* Booking Cards */
     .booking-card {
         background: var(--surface);
-        border-radius: var(--clay-radius);
+        border: var(--brutal-border);
+        border-radius: var(--brutal-radius);
         padding: 24px;
-        box-shadow: var(--clay-shadow);
-        border-left: 5px solid #d0d0d0;
-        transition: transform 0.2s, box-shadow 0.2s;
-        margin-bottom: 18px;
+        box-shadow: var(--brutal-shadow);
+        transition: transform 0.1s, box-shadow 0.1s;
+        margin-bottom: 24px;
     }
 
     .booking-card:hover {
-        transform: translateY(-3px);
-        box-shadow:
-            0 2px 0 rgba(0, 0, 0, 0.06),
-            0 16px 36px rgba(0, 0, 0, 0.1),
-            0 40px 60px rgba(0, 0, 0, 0.05),
-            inset 0 -3px 0 rgba(0, 0, 0, 0.08),
-            inset 0 1px 0 rgba(255, 255, 255, 0.85);
+        transform: translate(-4px, -4px);
+        box-shadow: var(--brutal-shadow-hover);
     }
 
     .booking-card.status-pending {
@@ -95,17 +91,18 @@
     }
 
     .customer-initial {
-        width: 44px;
-        height: 44px;
-        border-radius: 50%;
-        background: var(--dark);
-        color: white;
+        width: 46px;
+        height: 46px;
+        border-radius: 0;
+        border: var(--brutal-border);
+        background: #ffff00;
+        color: var(--dark);
         font-weight: 800;
-        font-size: 1rem;
+        font-size: 1.1rem;
         display: flex;
         align-items: center;
         justify-content: center;
-        box-shadow: 0 3px 0 rgba(0, 0, 0, 0.2), 0 6px 16px rgba(0, 0, 0, 0.1);
+        box-shadow: 3px 3px 0 var(--dark);
         flex-shrink: 0;
     }
 
@@ -128,16 +125,18 @@
 
     .status-tag {
         font-size: 0.72rem;
-        font-weight: 700;
-        padding: 4px 12px;
-        border-radius: 50px;
+        font-weight: 800;
+        padding: 6px 14px;
+        border-radius: 0;
+        border: 2px solid var(--dark);
         text-transform: uppercase;
-        letter-spacing: 0.5px;
+        letter-spacing: 1px;
+        box-shadow: 2px 2px 0 var(--dark);
     }
 
     .tag-pending {
-        background: #e8e8e8;
-        color: #444;
+        background: #ffffff;
+        color: var(--dark);
     }
 
     .tag-accepted {
@@ -146,13 +145,14 @@
     }
 
     .tag-rejected {
-        background: #f0f0f0;
-        color: #888;
+        background: #ffaaaa;
+        color: var(--dark);
     }
 
     .tag-cancelled {
-        background: #f5f5f5;
-        color: #aaa;
+        background: #e0e0e0;
+        color: var(--dark);
+        text-decoration: line-through;
     }
 
     .booking-meta {
@@ -179,13 +179,15 @@
     }
 
     .booking-address {
-        background: #f5f5f5;
-        border-radius: var(--clay-radius-sm);
+        background: #ffffff;
+        border: var(--brutal-border);
+        border-radius: 0;
         padding: 10px 14px;
         font-size: 0.85rem;
-        color: var(--mid);
+        font-weight: 600;
+        color: var(--dark);
         margin-bottom: 16px;
-        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.04);
+        box-shadow: 3px 3px 0 var(--dark);
     }
 
     /* Action buttons */
@@ -200,49 +202,55 @@
         flex: 1;
         background: var(--dark);
         color: white;
-        border: none;
-        border-radius: var(--clay-radius-sm);
-        padding: 10px;
+        border: var(--brutal-border);
+        border-radius: 0;
+        padding: 11px;
         font-size: 0.85rem;
-        font-weight: 700;
+        font-weight: 800;
+        text-transform: uppercase;
         cursor: pointer;
-        box-shadow: 0 3px 0 rgba(0, 0, 0, 0.3), 0 6px 16px rgba(0, 0, 0, 0.1);
-        transition: all 0.15s;
+        box-shadow: var(--brutal-shadow);
+        transition: all 0.1s;
     }
 
     .btn-accept:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 5px 0 rgba(0, 0, 0, 0.3), 0 10px 20px rgba(0, 0, 0, 0.12);
+        transform: translate(-3px, -3px);
+        box-shadow: var(--brutal-shadow-hover);
+        background: var(--dark);
+        color: white;
     }
 
     .btn-reject {
         flex: 1;
-        background: var(--surface);
-        color: #888;
-        border: 2px solid #d8d8d8;
-        border-radius: var(--clay-radius-sm);
-        padding: 10px;
+        background: #ffffff;
+        color: var(--dark);
+        border: var(--brutal-border);
+        border-radius: 0;
+        padding: 11px;
         font-size: 0.85rem;
-        font-weight: 700;
+        font-weight: 800;
+        text-transform: uppercase;
         cursor: pointer;
-        box-shadow: 0 3px 0 #c8c8c8, 0 6px 14px rgba(0, 0, 0, 0.04);
-        transition: all 0.15s;
+        box-shadow: var(--brutal-shadow);
+        transition: all 0.1s;
     }
 
     .btn-reject:hover {
-        background: #f5f5f5;
-        border-color: #aaa;
-        color: #555;
-        transform: translateY(-1px);
+        background: #ffaaaa;
+        color: var(--dark);
+        transform: translate(-3px, -3px);
+        box-shadow: var(--brutal-shadow-hover);
     }
 
     /* Empty state */
     .empty-box {
         background: var(--surface);
-        border-radius: var(--clay-radius);
+        border: var(--brutal-border);
+        border-radius: var(--brutal-radius);
         padding: 60px 32px;
         text-align: center;
-        box-shadow: var(--clay-shadow);
+        box-shadow: var(--brutal-shadow);
+        margin-top: 20px;
     }
 
     .empty-box .empty-icon {
@@ -292,6 +300,10 @@
         <h3>{% with bookings|dictsortreversed:"status" as sorted %}{{ bookings|length }}{% endwith %}</h3>
         <p>Showing</p>
     </div>
+    <div class="stat-pill">
+        <h3>{% if avg_rating %}{{ avg_rating|floatformat:1 }}★{% else %}—{% endif %}</h3>
+        <p>Your Rating ({{ review_count }})</p>
+    </div>
 </div>
 
 <!-- Bookings -->
@@ -339,12 +351,26 @@
                 📍 {{ booking.address }}
             </div>
 
+            {% if booking.status == 'Accepted' %}
+            <div class="booking-address"
+                style="margin-top: -8px; background: {% if booking.payment_status == 'Paid' %}#e8f5e9{% else %}#fff8e1{% endif %};">
+                💳 Payment: <strong>{{ booking.payment_status }}</strong>
+            </div>
+            {% endif %}
+
             {% if booking.status == 'Pending' %}
             <div class="action-row">
                 <a href="{% url 'accept_booking' booking.id %}" class="btn-accept"
                     style="text-decoration:none; text-align:center; display:block;">✓ Accept</a>
                 <a href="{% url 'reject_booking' booking.id %}" class="btn-reject"
                     style="text-decoration:none; text-align:center; display:block;">✕ Decline</a>
+            </div>
+            {% elif booking.status == 'Accepted' %}
+            <div class="action-row">
+                <a href="{% url 'chat_room' booking.id %}" class="btn-accept"
+                    style="background:#4F46E5; text-decoration:none; text-align:center; display:flex; align-items:center; justify-content:center; gap:8px;">
+                    <i class="bi bi-chat-dots-fill"></i> Chat with Customer
+                </a>
             </div>
             {% endif %}
         </div>

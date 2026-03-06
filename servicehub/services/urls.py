@@ -10,8 +10,12 @@ urlpatterns = [
     path('booking/<int:booking_id>/accept/', views.accept_booking, name='accept_booking'),
     path('booking/<int:booking_id>/reject/', views.reject_booking, name='reject_booking'),
     path('book/<int:provider_id>/', views.book_provider, name='book_provider'),
-    path('send-email/', views.send_email_view, name='send_email'),
+    path('feedback/', views.feedback_view, name='feedback'),
     path('cancel-booking/<int:booking_id>/', views.cancel_booking, name='cancel_booking'),
+    path('review/<int:booking_id>/', views.submit_review, name='submit_review'),
+    path('provider/<int:provider_id>/reviews/', views.provider_reviews, name='provider_reviews'),
+    path('api/geocode/', views.geocode_api, name='geocode_api'),
+    path('payment/success/', views.payment_success, name='payment_success'),
 ]
 
 

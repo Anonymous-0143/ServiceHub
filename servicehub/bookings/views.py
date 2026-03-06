@@ -1,31 +1,23 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from .models import Booking
+from .models import Booking, Message
 from services.models import ProviderProfile
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
 @login_required
-def book_provider(request, provider_id):
-    provider = get_object_or_404(User, id=provider_id)
-    
-    if request.method == 'POST':
-       
+def chat_room(request, booking_id):
+    booking = get_object_or_404(Booking, id=booking_id)
 
-        date = request.POST.get('date')
-        time = request.POST.get('time')
-        address = request.POST.get('address')
+    # Ensure the user is either the customer or the provider
+    if request.user != booking.user and request.user != booking.service_provider.user:
+        return redirect('home')
 
-        booking = Booking.objects.create(
-            customer=request.user,
-            provider=provider,
-            date=date,
-            time=time,
-            address=address
-        )
+    messages = booking.messages.all()
 
-        return redirect('dashboard')
-    return render(request, 'bookings/book_provider.html', {'form': form, 'provider': provider})
-
-# Create your views here.
+    context = {
+        'booking': booking,
+        'messages': messages,
+    }
+    return render(request, 'bookings/chat.html', context)

@@ -18,22 +18,17 @@
 
     .booking-card {
         background: var(--surface);
-        border-radius: var(--clay-radius);
+        border: var(--brutal-border);
+        border-radius: var(--brutal-radius);
         padding: 24px;
-        box-shadow: var(--clay-shadow);
-        border-left: 5px solid #d0d0d0;
-        margin-bottom: 18px;
-        transition: transform 0.2s, box-shadow 0.2s;
+        box-shadow: var(--brutal-shadow);
+        margin-bottom: 24px;
+        transition: transform 0.1s, box-shadow 0.1s;
     }
 
     .booking-card:hover {
-        transform: translateY(-3px);
-        box-shadow:
-            0 2px 0 rgba(0, 0, 0, 0.06),
-            0 16px 36px rgba(0, 0, 0, 0.1),
-            0 40px 60px rgba(0, 0, 0, 0.05),
-            inset 0 -3px 0 rgba(0, 0, 0, 0.08),
-            inset 0 1px 0 rgba(255, 255, 255, 0.85);
+        transform: translate(-4px, -4px);
+        box-shadow: var(--brutal-shadow-hover);
     }
 
     .booking-card.status-pending {
@@ -53,17 +48,18 @@
     }
 
     .provider-initial {
-        width: 44px;
-        height: 44px;
-        border-radius: 50%;
-        background: var(--dark);
-        color: white;
-        font-weight: 800;
-        font-size: 1rem;
+        width: 46px;
+        height: 46px;
+        border-radius: 0;
+        border: var(--brutal-border);
+        background: #ffff00;
+        color: var(--dark);
+        font-weight: 900;
+        font-size: 1.1rem;
         display: flex;
         align-items: center;
         justify-content: center;
-        box-shadow: 0 3px 0 rgba(0, 0, 0, 0.2);
+        box-shadow: 3px 3px 0 var(--border);
         flex-shrink: 0;
     }
 
@@ -82,16 +78,18 @@
 
     .status-tag {
         font-size: 0.72rem;
-        font-weight: 700;
-        padding: 4px 12px;
-        border-radius: 50px;
+        font-weight: 800;
+        padding: 6px 14px;
+        border-radius: 0;
+        border: 2px solid var(--dark);
         text-transform: uppercase;
-        letter-spacing: 0.5px;
+        letter-spacing: 1px;
+        box-shadow: 2px 2px 0 var(--dark);
     }
 
     .tag-pending {
-        background: #e8e8e8;
-        color: #444;
+        background: #ffffff;
+        color: var(--dark);
     }
 
     .tag-accepted {
@@ -100,13 +98,14 @@
     }
 
     .tag-rejected {
-        background: #f0f0f0;
-        color: #888;
+        background: #ffaaaa;
+        color: var(--dark);
     }
 
     .tag-cancelled {
-        background: #f5f5f5;
-        color: #aaa;
+        background: #e0e0e0;
+        color: var(--dark);
+        text-decoration: line-through;
     }
 
     .booking-meta {
@@ -134,10 +133,12 @@
 
     .empty-box {
         background: var(--surface);
-        border-radius: var(--clay-radius);
+        border: var(--brutal-border);
+        border-radius: var(--brutal-radius);
         padding: 60px 32px;
         text-align: center;
-        box-shadow: var(--clay-shadow);
+        box-shadow: var(--brutal-shadow);
+        margin-top: 20px;
     }
 
     .empty-box .empty-icon {
@@ -205,10 +206,89 @@
                 </div>
             </div>
 
+            {% if booking.status == 'Accepted' %}
+            <div class="d-flex gap-2 mt-2">
+
+                <a href="{% url 'chat_room' booking.id %}"
+                    style="display:inline-flex; align-items:center; justify-content:center; background: #fffbe0; border: var(--brutal-border); color: var(--dark); text-decoration: none; border-radius: 0; padding: 0 24px; font-weight: 800; text-transform: uppercase; font-size: 0.85rem; box-shadow: 3px 3px 0 var(--dark); transition: all 0.1s;">
+                    <i class="bi bi-chat-dots-fill me-2"></i> Chat
+                </a>
+
+                {% if booking.payment_status == 'Paid' %}
+                {% if not booking.review %}
+                <a href="{% url 'submit_review' booking.id %}" style="flex:1; text-align:center; background: var(--surface); color: var(--dark); border: var(--brutal-border); text-decoration: none;
+                                  border-radius: 0; padding: 11px 22px; font-size: 0.85rem; font-weight: 800; text-transform: uppercase;
+                                  box-shadow: 3px 3px 0 var(--dark);
+                                  transition: all 0.1s;">
+                    ⭐ Review
+                </a>
+                {% else %}
+                <span
+                    style="flex:1; display:flex; align-items:center; justify-content:center; font-size: 0.82rem; color: var(--dark); font-weight: 800; border: 2px dashed var(--dark); border-radius: 0; background: #fafafa;">
+                    ✅ Reviewed ({{ booking.review.rating }}★)
+                </span>
+                {% endif %}
+                {% elif booking.payment_status == 'Pending' and booking.razorpay_order_id %}
+                <button type="button" class="btn-pay-now" data-order-id="{{ booking.razorpay_order_id }}"
+                    data-amount="{{ booking.total_amount }}" style="flex:1; text-align:center; background: #4ade80; color: var(--dark); border: var(--brutal-border); text-decoration: none;
+                                  border-radius: 0; padding: 11px 22px; font-size: 0.85rem; font-weight: 800; text-transform: uppercase;
+                                  box-shadow: 3px 3px 0 var(--dark);
+                                  transition: all 0.1s; cursor:pointer;">
+                    💳 Pay ₹{{ booking.total_amount }}
+                </button>
+                {% endif %}
+            </div>
+            {% endif %}
+
         </div>
     </div>
     {% endfor %}
 </div>
+
+<!-- Razorpay Checkout Script -->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+    document.querySelectorAll('.btn-pay-now').forEach(button => {
+        button.addEventListener('click', function (e) {
+            e.preventDefault();
+
+            // In a real app, you would pass the specific key down from context.
+            // Using placeholder key from settings here. 
+            // Warning: If RAZORPAY_KEY_ID in settings changes, update this too or inject it via context.
+            var options = {
+                "key": "rzp_test_placeholder_key_id",
+                "amount": parseFloat(this.getAttribute('data-amount')) * 100, // paise
+                "currency": "INR",
+                "name": "ServiceHub",
+                "description": "Service Payment",
+                "order_id": this.getAttribute('data-order-id'),
+                "handler": function (response) {
+                    // Auto-submit the success data back to Django via a hidden form
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = "{% url 'payment_success' %}";
+
+                    ['razorpay_payment_id', 'razorpay_order_id', 'razorpay_signature'].forEach(field => {
+                        const input = document.createElement('input');
+                        input.type = 'hidden';
+                        input.name = field;
+                        input.value = response[field];
+                        form.appendChild(input);
+                    });
+
+                    document.body.appendChild(form);
+                    form.submit();
+                },
+                "theme": { "color": "#111111" }
+            };
+            var rzp = new Razorpay(options);
+            rzp.on('payment.failed', function (response) {
+                alert("Payment failed: " + response.error.description);
+            });
+            rzp.open();
+        });
+    });
+</script>
 
 {% else %}
 <div class="empty-box">

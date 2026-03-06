@@ -9,11 +9,15 @@ class CustomerRegistrationForm(UserCreationForm):
 
     class Meta(UserCreationForm.Meta):
         model = User
-        fields = ('username', 'first_name', 'last_name', 'email', 'phone', 'password1', 'password2')
+        fields = ('username', 'first_name', 'last_name', 'email', 'phone', 'location', 'password1', 'password2')
         widgets = {
             'phone': forms.TextInput(attrs={
                 'class': 'form-control',
                 'placeholder': 'Phone Number',
+            }),
+            'location': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Your city or area',
             }),
         }
 
@@ -99,12 +103,13 @@ class ProfileForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ('first_name', 'last_name', 'email', 'phone')
+        fields = ('first_name', 'last_name', 'email', 'phone', 'location')
         widgets = {
             'first_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'First name'}),
             'last_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Last name'}),
             'email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Email'}),
             'phone': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Phone number'}),
+            'location': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Your city or area'}),
         }
 
 

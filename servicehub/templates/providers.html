@@ -2,82 +2,389 @@
 
 {% block extra_head %}
 <style>
-    /* ── Claymorphism Provider Cards ── */
-    .clay-provider-card {
-        background: #f5f5f5;
-        border: none;
-        border-radius: var(--clay-radius);
+    /* From Uiverse.io by seoulchik - Adapted for ServiceHub */
+    .uiverse-card {
+        --primary: #ff3e00;
+        --primary-hover: #ff6d43;
+        --secondary: #4d61ff;
+        --secondary-hover: #5e70ff;
+        --accent: #00e0b0;
+        --text: #050505;
+        --bg: #ffffff;
+        --shadow-color: #000000;
+        --pattern-color: #cfcfcf;
+
+        position: relative;
+        width: 100%;
+        background: var(--bg);
+        border: 0.35em solid var(--text);
+        border-radius: 0.6em;
         box-shadow:
-            8px 8px 20px rgba(0, 0, 0, 0.08),
-            -8px -8px 20px rgba(255, 255, 255, 0.9),
-            inset 0 -3px 0 rgba(0, 0, 0, 0.06),
-            inset 0 2px 0 rgba(255, 255, 255, 0.7);
-        padding: 28px 24px;
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
+            0.7em 0.7em 0 var(--shadow-color),
+            inset 0 0 0 0.15em rgba(0, 0, 0, 0.05);
+        transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+        overflow: hidden;
+        font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+        transform-origin: center;
+        font-size: 0.85rem;
     }
 
-    .clay-provider-card:hover {
-        transform: translateY(-4px);
-        box-shadow:
-            10px 10px 28px rgba(0, 0, 0, 0.1),
-            -10px -10px 28px rgba(255, 255, 255, 0.95),
-            inset 0 -3px 0 rgba(0, 0, 0, 0.06),
-            inset 0 2px 0 rgba(255, 255, 255, 0.7);
+    .uiverse-card:hover {
+        transform: translate(-0.4em, -0.4em) scale(1.02);
+        box-shadow: 1em 1em 0 var(--shadow-color);
     }
 
-    .clay-provider-card h5 {
-        font-weight: 700;
-        font-size: 1.15rem;
-        margin-bottom: 12px;
-        color: var(--dark);
+    .uiverse-card:hover .card-pattern-grid,
+    .uiverse-card:hover .card-overlay-dots {
+        opacity: 1;
     }
 
-    .clay-provider-card p {
-        color: var(--mid);
-        font-size: 0.9rem;
-        margin-bottom: 6px;
+    .uiverse-card:active {
+        transform: translate(0.1em, 0.1em) scale(0.98);
+        box-shadow: 0.5em 0.5em 0 var(--shadow-color);
     }
 
-    .clay-provider-card .rate {
-        font-weight: 700;
-        color: var(--dark);
-        font-size: 1rem;
-        margin-top: 8px;
+    .uiverse-card::before {
+        content: "";
+        position: absolute;
+        top: -1em;
+        right: -1em;
+        width: 4em;
+        height: 4em;
+        background: var(--accent);
+        transform: rotate(45deg);
+        z-index: 1;
     }
 
-    /* ── Black Round "Book Now" Button ── */
-    .btn-book-now {
-        display: inline-block;
+    .uiverse-card::after {
+        content: "★";
+        position: absolute;
+        top: 0.4em;
+        right: 0.4em;
+        color: var(--text);
+        font-size: 1.2em;
+        font-weight: bold;
+        z-index: 2;
+    }
+
+    .card-pattern-grid {
+        position: absolute;
+        inset: 0;
+        background-image: linear-gradient(to right,
+                rgba(0, 0, 0, 0.05) 1px,
+                transparent 1px),
+            linear-gradient(to bottom, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+        background-size: 0.5em 0.5em;
+        pointer-events: none;
+        opacity: 0.5;
+        transition: opacity 0.4s ease;
+        z-index: 1;
+    }
+
+    .card-overlay-dots {
+        position: absolute;
+        inset: 0;
+        background-image: radial-gradient(var(--pattern-color) 1px, transparent 1px);
+        background-size: 1em 1em;
+        background-position: -0.5em -0.5em;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.4s ease;
+        z-index: 1;
+    }
+
+    .bold-pattern {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 6em;
+        height: 6em;
+        opacity: 0.15;
+        pointer-events: none;
+        z-index: 1;
+    }
+
+    .card-title-area {
+        position: relative;
+        padding: 1.4em;
         background: var(--dark);
-        color: #ffffff;
-        border: none;
-        border-radius: 50px;
-        padding: 12px 32px;
-        font-family: 'Inter', sans-serif;
-        font-size: 0.9rem;
+        color: var(--bg);
+        font-weight: 800;
+        font-size: 1.2em;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 0.35em solid var(--text);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        z-index: 2;
+        overflow: hidden;
+    }
+
+    .card-title-area::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: repeating-linear-gradient(45deg,
+                rgba(0, 0, 0, 0.1),
+                rgba(0, 0, 0, 0.1) 0.5em,
+                transparent 0.5em,
+                transparent 1em);
+        pointer-events: none;
+        opacity: 0.3;
+    }
+
+    .card-tag {
+        background: var(--bg);
+        color: var(--text);
+        font-size: 0.6em;
+        font-weight: 800;
+        padding: 0.4em 0.8em;
+        border: 0.15em solid var(--text);
+        border-radius: 0.3em;
+        box-shadow: 0.2em 0.2em 0 var(--shadow-color);
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        transform: rotate(3deg);
+        transition: all 0.3s ease;
+        white-space: nowrap;
+    }
+
+    .uiverse-card:hover .card-tag {
+        transform: rotate(-2deg) scale(1.1);
+        box-shadow: 0.25em 0.25em 0 var(--shadow-color);
+    }
+
+    .card-body {
+        position: relative;
+        padding: 1.5em;
+        z-index: 2;
+    }
+
+    .card-description {
+        margin-bottom: 1.5em;
+        color: var(--text);
+        font-size: 0.95em;
+        line-height: 1.4;
         font-weight: 600;
-        letter-spacing: 0.3px;
-        text-decoration: none;
+    }
+
+    .feature-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 0.6em;
+        margin-bottom: 1.5em;
+    }
+
+    .feature-item {
+        display: flex;
+        align-items: center;
+        gap: 0.6em;
+        transition: transform 0.2s ease;
+    }
+
+    .feature-item:hover {
+        transform: translateX(0.3em);
+    }
+
+    .feature-icon {
+        width: 1.6em;
+        height: 1.6em;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--bg);
+        border: 0.12em solid var(--text);
+        border-radius: 0.3em;
+        box-shadow: 0.2em 0.2em 0 rgba(0, 0, 0, 1);
+        transition: all 0.2s ease;
+        font-size: 0.9em;
+    }
+
+    .feature-item:hover .feature-icon {
+        background: var(--accent);
+        transform: rotate(-5deg);
+    }
+
+    .feature-text {
+        font-size: 0.85em;
+        font-weight: 700;
+        color: var(--text);
+    }
+
+    .card-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 1.5em;
+        padding-top: 1.2em;
+        border-top: 0.15em dashed rgba(0, 0, 0, 0.15);
+        position: relative;
+    }
+
+    .card-actions::before {
+        content: "✂";
+        position: absolute;
+        top: -0.8em;
+        left: 50%;
+        transform: translateX(-50%) rotate(90deg);
+        background: var(--bg);
+        padding: 0 0.5em;
+        font-size: 1em;
+        color: rgba(0, 0, 0, 0.4);
+    }
+
+    .price {
+        position: relative;
+        font-size: 1.8em;
+        font-weight: 800;
+        color: var(--text);
+        background: var(--bg);
+    }
+
+    .price::before {
+        content: "";
+        position: absolute;
+        bottom: 0.15em;
+        left: 0;
+        width: 100%;
+        height: 0.2em;
+        background: var(--accent);
+        z-index: -1;
+        opacity: 0.5;
+    }
+
+    .price-currency {
+        font-size: 0.6em;
+        font-weight: 700;
+        vertical-align: top;
+        margin-right: 0.1em;
+    }
+
+    .price-period {
+        display: block;
+        font-size: 0.4em;
+        font-weight: 600;
+        color: rgba(0, 0, 0, 0.6);
+        margin-top: 0.2em;
+    }
+
+    .card-button {
+        position: relative;
+        background: #000;
+        color: #fff;
+        font-size: 0.8rem;
+        font-weight: 800;
+        padding: 0.9em 1.2em;
+        border: 0.2em solid var(--text);
+        border-radius: 0.4em;
+        box-shadow: 0.3em 0.3em 0 var(--shadow-color);
         cursor: pointer;
-        margin-top: 14px;
-        box-shadow:
-            0 4px 0 rgba(0, 0, 0, 0.3),
-            0 8px 20px rgba(0, 0, 0, 0.12);
-        transition: all 0.15s ease;
+        transition: all 0.2s ease;
+        overflow: hidden;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        text-decoration: none;
+        display: inline-block;
     }
 
-    .btn-book-now:hover {
-        transform: translateY(-2px);
-        background: var(--dark2);
-        color: #ffffff;
-        box-shadow:
-            0 6px 0 rgba(0, 0, 0, 0.3),
-            0 14px 28px rgba(0, 0, 0, 0.18);
+    .card-button::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg,
+                transparent 0%,
+                rgba(255, 255, 255, 0.2) 50%,
+                transparent 100%);
+        transition: left 0.6s ease;
     }
 
-    .btn-book-now:active {
-        transform: translateY(2px);
-        box-shadow: 0 2px 0 rgba(0, 0, 0, 0.3);
+    .card-button:hover {
+        background: var(--primary);
+        color: #fff;
+        transform: translate(-0.1em, -0.1em);
+        box-shadow: 0.4em 0.4em 0 var(--shadow-color);
+    }
+
+    .card-button:hover::before {
+        left: 100%;
+    }
+
+    .card-button:active {
+        transform: translate(0.1em, 0.1em);
+        box-shadow: 0.15em 0.15em 0 var(--shadow-color);
+    }
+
+    .dots-pattern {
+        position: absolute;
+        bottom: 2em;
+        left: -2em;
+        width: 8em;
+        height: 4em;
+        opacity: 0.3;
+        transform: rotate(-10deg);
+        pointer-events: none;
+        z-index: 1;
+    }
+
+    .accent-shape {
+        position: absolute;
+        width: 2.5em;
+        height: 2.5em;
+        background: var(--secondary);
+        border: 0.15em solid var(--text);
+        border-radius: 0.3em;
+        transform: rotate(45deg);
+        bottom: -1.2em;
+        right: 2em;
+        z-index: 0;
+        transition: transform 0.3s ease;
+    }
+
+    .uiverse-card:hover .accent-shape {
+        transform: rotate(55deg) scale(1.1);
+    }
+
+    .stamp {
+        position: absolute;
+        bottom: 1.5em;
+        left: 1.5em;
+        width: 4em;
+        height: 4em;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 0.15em solid rgba(0, 0, 0, 0.3);
+        border-radius: 50%;
+        transform: rotate(-15deg);
+        opacity: 0.5;
+        z-index: 1;
+    }
+
+    .stamp-text {
+        font-size: 0.6em;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .corner-slice {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 1.5em;
+        height: 1.5em;
+        background: var(--bg);
+        border-right: 0.25em solid var(--text);
+        border-top: 0.25em solid var(--text);
+        border-radius: 0 0.5em 0 0;
+        z-index: 1;
     }
 </style>
 {% endblock %}
@@ -87,15 +394,176 @@
 <h2 style="font-weight: 800; margin-bottom: 6px;">Available Providers</h2>
 <p style="color: var(--muted); margin-bottom: 28px;">Browse and book trusted service providers near you</p>
 
+<!-- LOCATION SEARCH BAR & FILTERS -->
+<form method="GET" action="" id="location-form" class="mb-4 d-flex gap-2 flex-wrap" style="max-width: 1000px;">
+    <!-- Manual Search -->
+    <input type="text" name="location" id="location-input" class="form-control rounded-pill px-4 shadow-sm"
+        placeholder="Search by city or area..." value="{{ location_query }}"
+        style="border: 2px solid #e0e0e0; min-width: 200px;">
+
+    <button type="submit" class="btn btn-dark rounded-pill px-4 shadow-sm" style="font-weight: 600;">
+        <i class="bi bi-search"></i> Search
+    </button>
+
+    <!-- GPS Button -->
+    <button type="button" id="gps-btn" class="btn btn-primary rounded-pill px-3 shadow-sm" style="font-weight: 600;"
+        title="Find providers near me">
+        <i class="bi bi-geo-alt-fill" id="gps-icon"></i> <span id="gps-text">Use GPS</span>
+    </button>
+
+    {% if location_query %}
+    <a href="?" class="btn btn-light rounded-pill px-3 shadow-sm border" title="Clear Search">
+        <i class="bi bi-x-lg"></i>
+    </a>
+    {% endif %}
+
+    <!-- FILTERS & SORTING (Added inside the form) -->
+    <div class="w-100 mt-3 d-flex gap-3 flex-wrap align-items-end"
+        style="background: #fcfcfc; padding: 16px; border-radius: var(--clay-radius-sm); border: 1px solid #eee;">
+
+        <!-- Price Min -->
+        <div style="flex: 1; min-width: 120px;">
+            <label class="form-label text-muted mb-1" style="font-size: 0.8rem; font-weight: 600;">Min Price (₹)</label>
+            <input type="number" name="min_price" class="form-control" placeholder="0"
+                value="{{ min_price|default:'' }}">
+        </div>
+
+        <!-- Price Max -->
+        <div style="flex: 1; min-width: 120px;">
+            <label class="form-label text-muted mb-1" style="font-size: 0.8rem; font-weight: 600;">Max Price (₹)</label>
+            <input type="number" name="max_price" class="form-control" placeholder="Any"
+                value="{{ max_price|default:'' }}">
+        </div>
+
+        <!-- Minimum Rating -->
+        <div style="flex: 1; min-width: 150px;">
+            <label class="form-label text-muted mb-1" style="font-size: 0.8rem; font-weight: 600;">Minimum
+                Rating</label>
+            <select name="min_rating" class="form-select">
+                <option value="">Any Rating</option>
+                <option value="4" {% if min_rating=='4' %}selected{% endif %}>4+ Stars</option>
+                <option value="3" {% if min_rating=='3' %}selected{% endif %}>3+ Stars</option>
+                <option value="2" {% if min_rating=='2' %}selected{% endif %}>2+ Stars</option>
+            </select>
+        </div>
+
+        <!-- Sort By -->
+        <div style="flex: 1; min-width: 180px;">
+            <label class="form-label text-muted mb-1" style="font-size: 0.8rem; font-weight: 600;">Sort By</label>
+            <select name="sort_by" class="form-select">
+                <option value="">Relevance</option>
+                <option value="price_asc" {% if sort_by=='price_asc' %}selected{% endif %}>Price: Low to High</option>
+                <option value="price_desc" {% if sort_by=='price_desc' %}selected{% endif %}>Price: High to Low</option>
+                <option value="rating_desc" {% if sort_by=='rating_desc' %}selected{% endif %}>Highest Rated</option>
+                <option value="experience_desc" {% if sort_by=='experience_desc' %}selected{% endif %}>Most Experienced
+                </option>
+            </select>
+        </div>
+
+        <div>
+            <button type="submit" class="btn btn-secondary px-4" style="height: 38px;">Apply Filters</button>
+        </div>
+    </div>
+
+    <!-- Hidden Inputs for GPS coordinates -->
+    <input type="hidden" name="lat" id="lat-input" value="{{ request.GET.lat|default:'' }}">
+    <input type="hidden" name="lon" id="lon-input" value="{{ request.GET.lon|default:'' }}">
+</form>
+<!-- /LOCATION SEARCH BAR -->
+
 <div class="row">
     {% for provider in providers %}
-    <div class="col-md-4 mb-4">
-        <div class="clay-provider-card">
-            <h5>{{ provider.user.get_full_name|default:provider.user.username }}</h5>
-            <p>🛠️ Experience: {{ provider.experience }} years</p>
-            <p>📍 Location: {{ provider.location }}</p>
-            <p class="rate">₹{{ provider.hourly_rate }}/hour</p>
-            <a href="{% url 'book_provider' provider.id %}" class="btn-book-now">Book Now</a>
+    <div class="col-lg-3 col-md-4 col-sm-6 mb-5">
+        <div class="uiverse-card">
+            <div class="card-pattern-grid"></div>
+            <div class="card-overlay-dots"></div>
+
+            <div class="bold-pattern">
+                <svg viewBox="0 0 100 100">
+                    <path stroke-dasharray="15 10" stroke-width="10" stroke="#000" fill="none"
+                        d="M0,0 L100,0 L100,100 L0,100 Z"></path>
+                </svg>
+            </div>
+
+            <div class="card-title-area">
+                <span
+                    style="font-size: 1rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 180px;"
+                    title="{{ provider.user.get_full_name|default:provider.user.username }}">{{
+                    provider.user.get_full_name|default:provider.user.username }}</span>
+                <span class="card-tag">
+                    {% if provider.avg_rating %}{{ provider.avg_rating|floatformat:1 }}★{% else %}NEW{% endif %}
+                </span>
+            </div>
+
+            <div class="card-body">
+                <div class="card-description">
+                    <p style="margin-bottom: 2px;">Provider specialized in delivering quality services within your area.
+                    </p>
+                </div>
+
+                <div class="feature-grid">
+                    <div class="feature-item">
+                        <div class="feature-icon">📍</div>
+                        <span class="feature-text">{{ provider.location }}</span>
+                    </div>
+
+                    <div class="feature-item">
+                        <div class="feature-icon">🛠️</div>
+                        <span class="feature-text">{{ provider.experience }} Years Experience</span>
+                    </div>
+
+                    <div class="feature-item">
+                        <div class="feature-icon">📝</div>
+                        <span class="feature-text">
+                            {% if provider.review_count %}
+                            {{ provider.review_count }} Reviews
+                            {% else %}
+                            No Reviews Yet
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="card-actions">
+                    <div class="price">
+                        <span class="price-currency">₹</span>{{ provider.hourly_rate }}
+                        <span class="price-period">per hour</span>
+                    </div>
+
+                    <a href="{% url 'book_provider' provider.id %}" class="card-button">Book</a>
+                </div>
+
+                {% if provider.review_count %}
+                <div style="text-align: right; margin-top: 12px; position:relative; z-index: 10;">
+                    <a href="{% url 'provider_reviews' provider.id %}"
+                        style="font-size: 0.75rem; text-transform: uppercase; font-weight: 800; color: var(--dark); border-bottom: 2px solid var(--dark); text-decoration: none;">View
+                        Reviews</a>
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="dots-pattern">
+                <svg viewBox="0 0 80 40">
+                    <circle fill="#000" r="3" cy="10" cx="10"></circle>
+                    <circle fill="#000" r="3" cy="10" cx="30"></circle>
+                    <circle fill="#000" r="3" cy="10" cx="50"></circle>
+                    <circle fill="#000" r="3" cy="10" cx="70"></circle>
+                    <circle fill="#000" r="3" cy="20" cx="20"></circle>
+                    <circle fill="#000" r="3" cy="20" cx="40"></circle>
+                    <circle fill="#000" r="3" cy="20" cx="60"></circle>
+                    <circle fill="#000" r="3" cy="30" cx="10"></circle>
+                    <circle fill="#000" r="3" cy="30" cx="30"></circle>
+                    <circle fill="#000" r="3" cy="30" cx="50"></circle>
+                    <circle fill="#000" r="3" cy="30" cx="70"></circle>
+                </svg>
+            </div>
+
+            <div class="accent-shape"></div>
+            <div class="corner-slice"></div>
+
+            <div class="stamp">
+                <span class="stamp-text">ACTIVE</span>
+            </div>
         </div>
     </div>
     {% empty %}
@@ -106,5 +574,55 @@
     </div>
     {% endfor %}
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const gpsBtn = document.getElementById('gps-btn');
+        const latInput = document.getElementById('lat-input');
+        const lonInput = document.getElementById('lon-input');
+        const locationForm = document.getElementById('location-form');
+        const gpsIcon = document.getElementById('gps-icon');
+        const gpsText = document.getElementById('gps-text');
+
+        if (gpsBtn) {
+            gpsBtn.addEventListener('click', function () {
+                if ("geolocation" in navigator) {
+                    // UI Loading State
+                    gpsBtn.disabled = true;
+                    gpsIcon.className = "spinner-border spinner-border-sm me-1";
+                    gpsText.textContent = "Locating...";
+
+                    navigator.geolocation.getCurrentPosition(
+                        function (position) {
+                            // Success block
+                            latInput.value = position.coords.latitude;
+                            lonInput.value = position.coords.longitude;
+
+                            // Submit the form which brings coordinates to Django backend
+                            locationForm.submit();
+                        },
+                        function (error) {
+                            // Error block
+                            console.error("Error getting location:", error);
+                            alert("Could not access your location. Please ensure you have granted location permissions to this site.");
+
+                            // Reset UI
+                            gpsBtn.disabled = false;
+                            gpsIcon.className = "bi bi-geo-alt-fill";
+                            gpsText.textContent = "Use GPS";
+                        },
+                        {
+                            enableHighAccuracy: true,
+                            timeout: 10000,
+                            maximumAge: 0
+                        }
+                    );
+                } else {
+                    alert("Geolocation is not supported by your browser");
+                }
+            });
+        }
+    });
+</script>
 
 {% endblock %}
