@@ -150,9 +150,9 @@
                 Rating</label>
             <select name="min_rating" class="form-select">
                 <option value="">Any Rating</option>
-                <option value="4" {% if min_rating=='4' %}selected{% endif %}>4+ Stars</option>
-                <option value="3" {% if min_rating=='3' %}selected{% endif %}>3+ Stars</option>
-                <option value="2" {% if min_rating=='2' %}selected{% endif %}>2+ Stars</option>
+                <option value="4" {% if min_rating == '4' %}selected{% endif %}>4+ Stars</option>
+                <option value="3" {% if min_rating == '3' %}selected{% endif %}>3+ Stars</option>
+                <option value="2" {% if min_rating == '2' %}selected{% endif %}>2+ Stars</option>
             </select>
         </div>
 
@@ -161,10 +161,10 @@
             <label class="form-label text-muted mb-1" style="font-size: 0.8rem; font-weight: 600;">Sort By</label>
             <select name="sort_by" class="form-select">
                 <option value="">Relevance</option>
-                <option value="price_asc" {% if sort_by=='price_asc' %}selected{% endif %}>Price: Low to High</option>
-                <option value="price_desc" {% if sort_by=='price_desc' %}selected{% endif %}>Price: High to Low</option>
-                <option value="rating_desc" {% if sort_by=='rating_desc' %}selected{% endif %}>Highest Rated</option>
-                <option value="experience_desc" {% if sort_by=='experience_desc' %}selected{% endif %}>Most Experienced
+                <option value="price_asc" {% if sort_by == 'price_asc' %}selected{% endif %}>Price: Low to High</option>
+                <option value="price_desc" {% if sort_by == 'price_desc' %}selected{% endif %}>Price: High to Low</option>
+                <option value="rating_desc" {% if sort_by == 'rating_desc' %}selected{% endif %}>Highest Rated</option>
+                <option value="experience_desc" {% if sort_by == 'experience_desc' %}selected{% endif %}>Most Experienced
                 </option>
             </select>
         </div>
