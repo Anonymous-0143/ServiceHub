@@ -1,0 +1,389 @@
+{% extends 'base.html' %}
+
+{% block extra_head %}
+<style>
+    .page-title {
+        font-size: 1.5rem;
+        font-weight: 900;
+        color: var(--dark);
+        letter-spacing: -0.5px;
+        margin: 0 0 4px;
+    }
+
+    .page-sub {
+        color: var(--muted);
+        font-size: 0.88rem;
+        margin: 0 0 28px;
+    }
+
+    /* Stat bar */
+    .stat-row {
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+        margin-bottom: 28px;
+    }
+
+    .stat-pill {
+        background: var(--surface);
+        border: var(--brutal-border);
+        border-radius: var(--brutal-radius);
+        padding: 18px 24px;
+        box-shadow: var(--brutal-shadow);
+        flex: 1;
+        min-width: 120px;
+    }
+
+    .stat-pill h3 {
+        font-size: 1.6rem;
+        font-weight: 900;
+        color: var(--dark);
+        margin: 0;
+        letter-spacing: -0.5px;
+    }
+
+    .stat-pill p {
+        font-size: 0.78rem;
+        color: var(--muted);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin: 4px 0 0;
+    }
+
+    /* Booking Cards */
+    .booking-card {
+        background: var(--surface);
+        border: var(--brutal-border);
+        border-radius: var(--brutal-radius);
+        padding: 24px;
+        box-shadow: var(--brutal-shadow);
+        transition: transform 0.1s, box-shadow 0.1s;
+        margin-bottom: 24px;
+    }
+
+    .booking-card:hover {
+        transform: translate(-4px, -4px);
+        box-shadow: var(--brutal-shadow-hover);
+    }
+
+    .booking-card.status-pending {
+        border-left-color: #555;
+    }
+
+    .booking-card.status-accepted {
+        border-left-color: #222;
+    }
+
+    .booking-card.status-rejected {
+        border-left-color: #bbb;
+    }
+
+    .booking-card.status-cancelled {
+        border-left-color: #ddd;
+    }
+
+    .booking-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 14px;
+    }
+
+    .customer-initial {
+        width: 46px;
+        height: 46px;
+        border-radius: 0;
+        border: var(--brutal-border);
+        background: #ffff00;
+        color: var(--dark);
+        font-weight: 800;
+        font-size: 1.1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 3px 3px 0 var(--dark);
+        flex-shrink: 0;
+    }
+
+    .customer-initial.grey {
+        background: #555;
+    }
+
+    .booking-name {
+        font-weight: 800;
+        font-size: 0.95rem;
+        color: var(--dark);
+        margin: 0;
+    }
+
+    .booking-role {
+        font-size: 0.78rem;
+        color: var(--muted);
+        margin: 0;
+    }
+
+    .status-tag {
+        font-size: 0.72rem;
+        font-weight: 800;
+        padding: 6px 14px;
+        border-radius: 0;
+        border: 2px solid var(--dark);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        box-shadow: 2px 2px 0 var(--dark);
+    }
+
+    .tag-pending {
+        background: #ffffff;
+        color: var(--dark);
+    }
+
+    .tag-accepted {
+        background: #1a1a1a;
+        color: #fff;
+    }
+
+    .tag-rejected {
+        background: #ffaaaa;
+        color: var(--dark);
+    }
+
+    .tag-cancelled {
+        background: #e0e0e0;
+        color: var(--dark);
+        text-decoration: line-through;
+    }
+
+    .booking-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 14px;
+        margin-bottom: 18px;
+        font-size: 0.85rem;
+        color: var(--mid);
+    }
+
+    .meta-item {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .meta-label {
+        font-size: 0.72rem;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        display: block;
+    }
+
+    .booking-address {
+        background: #ffffff;
+        border: var(--brutal-border);
+        border-radius: 0;
+        padding: 10px 14px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--dark);
+        margin-bottom: 16px;
+        box-shadow: 3px 3px 0 var(--dark);
+    }
+
+    /* Action buttons */
+    .action-row {
+        display: flex;
+        gap: 10px;
+        padding-top: 14px;
+        border-top: 1px solid #f0f0f0;
+    }
+
+    .btn-accept {
+        flex: 1;
+        background: var(--dark);
+        color: white;
+        border: var(--brutal-border);
+        border-radius: 0;
+        padding: 11px;
+        font-size: 0.85rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        cursor: pointer;
+        box-shadow: var(--brutal-shadow);
+        transition: all 0.1s;
+    }
+
+    .btn-accept:hover {
+        transform: translate(-3px, -3px);
+        box-shadow: var(--brutal-shadow-hover);
+        background: var(--dark);
+        color: white;
+    }
+
+    .btn-reject {
+        flex: 1;
+        background: #ffffff;
+        color: var(--dark);
+        border: var(--brutal-border);
+        border-radius: 0;
+        padding: 11px;
+        font-size: 0.85rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        cursor: pointer;
+        box-shadow: var(--brutal-shadow);
+        transition: all 0.1s;
+    }
+
+    .btn-reject:hover {
+        background: #ffaaaa;
+        color: var(--dark);
+        transform: translate(-3px, -3px);
+        box-shadow: var(--brutal-shadow-hover);
+    }
+
+    /* Empty state */
+    .empty-box {
+        background: var(--surface);
+        border: var(--brutal-border);
+        border-radius: var(--brutal-radius);
+        padding: 60px 32px;
+        text-align: center;
+        box-shadow: var(--brutal-shadow);
+        margin-top: 20px;
+    }
+
+    .empty-box .empty-icon {
+        font-size: 3rem;
+        margin-bottom: 14px;
+        display: block;
+    }
+
+    .empty-box h4 {
+        font-weight: 800;
+        color: var(--dark);
+        margin-bottom: 8px;
+    }
+
+    .empty-box p {
+        color: var(--muted);
+        font-size: 0.9rem;
+        margin: 0;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- Messages -->
+{% if messages %}
+{% for message in messages %}
+<div class="alert alert-{% if message.tags == 'success' %}success{% else %}secondary{% endif %} alert-dismissible fade show mb-3"
+    role="alert">
+    {{ message }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+</div>
+{% endfor %}
+{% endif %}
+
+<!-- Header -->
+<h2 class="page-title">📋 Booking Requests</h2>
+<p class="page-sub">Manage incoming requests from customers — accept or decline them below</p>
+
+<!-- Stats -->
+<div class="stat-row">
+    <div class="stat-pill">
+        <h3>{{ bookings|length }}</h3>
+        <p>Total</p>
+    </div>
+    <div class="stat-pill">
+        <h3>{% with bookings|dictsortreversed:"status" as sorted %}{{ bookings|length }}{% endwith %}</h3>
+        <p>Showing</p>
+    </div>
+    <div class="stat-pill">
+        <h3>{% if avg_rating %}{{ avg_rating|floatformat:1 }}★{% else %}—{% endif %}</h3>
+        <p>Your Rating ({{ review_count }})</p>
+    </div>
+</div>
+
+<!-- Bookings -->
+{% if bookings %}
+<div class="row">
+    {% for booking in bookings %}
+    <div class="col-md-6">
+        <div
+            class="booking-card status-{% if booking.status == 'Pending' %}pending{% elif booking.status == 'Accepted' %}accepted{% elif booking.status == 'Rejected' %}rejected{% else %}cancelled{% endif %}">
+
+            <div class="booking-top">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="customer-initial {% if forloop.counter|divisibleby:2 %}grey{% endif %}">
+                        {{ booking.user.username|first|upper }}
+                    </div>
+                    <div>
+                        <p class="booking-name">{{ booking.user.username }}</p>
+                        <p class="booking-role">Customer</p>
+                    </div>
+                </div>
+                <span
+                    class="status-tag tag-{% if booking.status == 'Pending' %}pending{% elif booking.status == 'Accepted' %}accepted{% elif booking.status == 'Rejected' %}rejected{% else %}cancelled{% endif %}">
+                    {{ booking.status }}
+                </span>
+            </div>
+
+            <div class="booking-meta">
+                <div class="meta-item">
+                    <span>📅</span>
+                    <div>
+                        <span class="meta-label">Date</span>
+                        {{ booking.date }}
+                    </div>
+                </div>
+                <div class="meta-item">
+                    <span>🕐</span>
+                    <div>
+                        <span class="meta-label">Time</span>
+                        {{ booking.time }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="booking-address">
+                📍 {{ booking.address }}
+            </div>
+
+            {% if booking.status == 'Accepted' %}
+            <div class="booking-address"
+                style="margin-top: -8px; background: {% if booking.payment_status == 'Paid' %}#e8f5e9{% else %}#fff8e1{% endif %};">
+                💳 Payment: <strong>{{ booking.payment_status }}</strong>
+            </div>
+            {% endif %}
+
+            {% if booking.status == 'Pending' %}
+            <div class="action-row">
+                <a href="{% url 'accept_booking' booking.id %}" class="btn-accept"
+                    style="text-decoration:none; text-align:center; display:block;">✓ Accept</a>
+                <a href="{% url 'reject_booking' booking.id %}" class="btn-reject"
+                    style="text-decoration:none; text-align:center; display:block;">✕ Decline</a>
+            </div>
+            {% elif booking.status == 'Accepted' %}
+            <div class="action-row">
+                <a href="{% url 'chat_room' booking.id %}" class="btn-accept"
+                    style="background:#4F46E5; text-decoration:none; text-align:center; display:flex; align-items:center; justify-content:center; gap:8px;">
+                    <i class="bi bi-chat-dots-fill"></i> Chat with Customer
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+{% else %}
+<div class="empty-box">
+    <span class="empty-icon">📭</span>
+    <h4>No bookings yet</h4>
+    <p>Booking requests from customers will appear here.</p>
+</div>
+{% endif %}
+
+{% endblock %}

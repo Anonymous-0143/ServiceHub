@@ -1,0 +1,1349 @@
+{% extends 'base.html' %}
+
+{% block content_wrapper_class %}{% if user.is_authenticated %}main-content{% else %}{% endif %}{% endblock %}
+
+{% block extra_head %}
+<style>
+    /* Landing page — black/white/grey claymorphism */
+    .hero {
+        background: var(--dark);
+        border-radius: 0 0 36px 36px;
+        padding: 90px 0 110px;
+        position: relative;
+        overflow: hidden;
+        box-shadow: var(--clay-shadow-dark);
+    }
+
+    .hero::before {
+        content: '';
+        position: absolute;
+        top: -80px;
+        right: -80px;
+        width: 400px;
+        height: 400px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(255, 255, 255, 0.04) 0%, transparent 70%);
+        pointer-events: none;
+    }
+
+    .hero-eyebrow {
+        display: inline-block;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        color: #aaaaaa;
+        border-radius: 50px;
+        padding: 6px 18px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        margin-bottom: 22px;
+    }
+
+    .hero h1 {
+        font-size: 3.4rem;
+        font-weight: 900;
+        line-height: 1.12;
+        color: #ffffff;
+        margin-bottom: 20px;
+        letter-spacing: -1.5px;
+    }
+
+    .hero h1 .accent {
+        color: #bbbbbb;
+    }
+
+    .hero p.lead {
+        font-size: 1.1rem;
+        color: #888;
+        max-width: 520px;
+        line-height: 1.75;
+        margin-bottom: 38px;
+    }
+
+    .btn-clay-white {
+        background: #ffffff;
+        color: var(--dark);
+        border: none;
+        border-radius: var(--clay-radius-sm);
+        padding: 14px 32px;
+        font-size: 0.95rem;
+        font-weight: 700;
+        text-decoration: none;
+        display: inline-block;
+        box-shadow: 0 4px 0 rgba(0, 0, 0, 0.3), 0 10px 28px rgba(0, 0, 0, 0.2);
+        transition: all 0.15s;
+    }
+
+    .btn-clay-white:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 0 rgba(0, 0, 0, 0.3), 0 16px 32px rgba(0, 0, 0, 0.25);
+        color: var(--dark);
+    }
+
+    .btn-clay-white:active {
+        transform: translateY(2px);
+        box-shadow: 0 2px 0 rgba(0, 0, 0, 0.3);
+    }
+
+    .btn-clay-ghost {
+        background: transparent;
+        color: #999;
+        border: 2px solid rgba(255, 255, 255, 0.15);
+        border-radius: var(--clay-radius-sm);
+        padding: 13px 28px;
+        font-size: 0.95rem;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-block;
+        transition: all 0.2s;
+    }
+
+    .btn-clay-ghost:hover {
+        border-color: rgba(255, 255, 255, 0.35);
+        color: #ccc;
+    }
+
+    /* Stats bar */
+    .stats-bar {
+        background: var(--surface);
+        border-radius: var(--clay-radius);
+        box-shadow: var(--clay-shadow);
+        padding: 28px 0;
+        margin-top: -50px;
+        position: relative;
+        z-index: 10;
+    }
+
+    .stat-item h3 {
+        font-size: 2rem;
+        font-weight: 900;
+        color: var(--dark);
+        margin: 0;
+        letter-spacing: -1px;
+    }
+
+    .stat-item p {
+        color: var(--muted);
+        margin: 4px 0 0;
+        font-size: 0.85rem;
+        font-weight: 500;
+    }
+
+    .stat-divider {
+        width: 1px;
+        height: 44px;
+        background: var(--border);
+    }
+
+    /* Section headings */
+    .section-tag {
+        font-size: 0.72rem;
+        font-weight: 800;
+        letter-spacing: 2.5px;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: 10px;
+        display: block;
+    }
+
+    .section-heading {
+        font-size: 2rem;
+        font-weight: 900;
+        color: var(--dark);
+        letter-spacing: -0.8px;
+        margin-bottom: 10px;
+    }
+
+    .section-sub {
+        color: var(--muted);
+        font-size: 0.95rem;
+        max-width: 480px;
+        margin: 0 auto 48px;
+        line-height: 1.7;
+    }
+
+    /* Step cards */
+    .step-card {
+        background: var(--surface);
+        border-radius: var(--clay-radius);
+        padding: 36px 28px 30px;
+        text-align: center;
+        box-shadow: var(--clay-shadow);
+        height: 100%;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .step-card:hover {
+        transform: translateY(-5px);
+        box-shadow:
+            0 2px 0 rgba(0, 0, 0, 0.06),
+            0 16px 40px rgba(0, 0, 0, 0.12),
+            0 40px 70px rgba(0, 0, 0, 0.06),
+            inset 0 -3px 0 rgba(0, 0, 0, 0.08),
+            inset 0 1px 0 rgba(255, 255, 255, 0.85);
+    }
+
+    .step-num {
+        width: 52px;
+        height: 52px;
+        border-radius: 50%;
+        background: var(--dark);
+        color: white;
+        font-size: 1.2rem;
+        font-weight: 800;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+        box-shadow: 0 4px 0 rgba(0, 0, 0, 0.25), 0 8px 20px rgba(0, 0, 0, 0.12);
+    }
+
+    .step-card h5 {
+        font-size: 1rem;
+        font-weight: 800;
+        color: var(--dark);
+        margin-bottom: 10px;
+    }
+
+    .step-card p {
+        color: var(--muted);
+        font-size: 0.88rem;
+        line-height: 1.7;
+        margin: 0;
+    }
+
+    /* Category chips */
+    .chip {
+        display: inline-block;
+        background: var(--surface);
+        border: 2px solid var(--border);
+        border-radius: 50px;
+        padding: 9px 20px;
+        font-size: 0.88rem;
+        font-weight: 600;
+        color: var(--dark);
+        text-decoration: none;
+        margin: 5px;
+        box-shadow: 0 3px 0 #c8c8c8, 0 6px 14px rgba(0, 0, 0, 0.06);
+        transition: all 0.15s;
+    }
+
+    .chip:hover {
+        background: var(--dark);
+        color: white;
+        border-color: var(--dark);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 0 rgba(0, 0, 0, 0.2), 0 10px 20px rgba(0, 0, 0, 0.12);
+    }
+
+    /* Testimonial cards */
+    .testi-card {
+        background: var(--surface);
+        border-radius: var(--clay-radius);
+        padding: 28px;
+        height: 100%;
+        box-shadow: var(--clay-shadow);
+    }
+
+    .testi-stars {
+        font-size: 0.95rem;
+        margin-bottom: 14px;
+        color: #333;
+    }
+
+    .testi-card p {
+        color: var(--mid);
+        font-size: 0.92rem;
+        line-height: 1.75;
+        font-style: italic;
+        margin-bottom: 20px;
+    }
+
+    .author-chip {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .author-av {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: var(--dark);
+        color: white;
+        font-weight: 800;
+        font-size: 0.95rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 3px 0 rgba(0, 0, 0, 0.2);
+    }
+
+    .author-av.grey {
+        background: #555;
+    }
+
+    .author-av.light {
+        background: #888;
+    }
+
+    .author-name {
+        font-weight: 700;
+        font-size: 0.88rem;
+        color: var(--dark);
+        margin: 0;
+    }
+
+    .author-role {
+        font-size: 0.78rem;
+        color: var(--muted);
+        margin: 0;
+    }
+
+    /* CTA band */
+    .cta-band {
+        background: var(--dark);
+        border-radius: var(--clay-radius);
+        padding: 64px 48px;
+        text-align: center;
+        box-shadow: var(--clay-shadow-dark);
+        margin: 0;
+    }
+
+    .cta-band h2 {
+        font-size: 2.2rem;
+        font-weight: 900;
+        color: white;
+        letter-spacing: -0.8px;
+        margin-bottom: 12px;
+    }
+
+    .cta-band p {
+        color: #777;
+        font-size: 1rem;
+        margin-bottom: 32px;
+        max-width: 440px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    /* Footer */
+    .site-footer {
+        background: #111111;
+        padding: 52px 0 28px;
+        margin-top: 0;
+        border-radius: var(--clay-radius) var(--clay-radius) 0 0;
+    }
+
+    .footer-brand {
+        font-size: 1.2rem;
+        font-weight: 900;
+        color: white;
+        margin-bottom: 8px;
+    }
+
+    .site-footer p {
+        font-size: 0.88rem;
+        color: #555;
+        line-height: 1.65;
+    }
+
+    .footer-heading {
+        font-weight: 700;
+        color: #aaa;
+        font-size: 0.8rem;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        margin-bottom: 14px;
+    }
+
+    .site-footer a {
+        color: #555;
+        text-decoration: none;
+        font-size: 0.9rem;
+        display: block;
+        margin-bottom: 8px;
+        transition: color 0.2s;
+    }
+
+    .site-footer a:hover {
+        color: #aaa;
+    }
+
+    .hr-dark {
+        border-color: #222;
+        margin: 36px 0 24px;
+    }
+
+    .footer-copy {
+        text-align: center;
+        font-size: 0.82rem;
+        color: #444;
+    }
+
+    /* Section spacing */
+    .section {
+        padding: 80px 0;
+    }
+
+    .section-alt {
+        padding: 80px 0;
+        background: #dcdcdc;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+{% if user.is_authenticated %}
+<!-- Authenticated -->
+{% if user.role == 'customer' %}
+<!-- Customer: Services list -->
+<h2 class="fw-black mb-1" style="letter-spacing:-0.5px;">Hello, {{ user.get_full_name|default:user.username }}! 👋</h2>
+<p class="text-muted mb-4" style="font-size:0.92rem;">Browse and book trusted local professionals</p>
+<hr style="border-color:#d0d0d0; margin-bottom:28px;">
+<div class="row g-3">
+    {% for category in categories %}
+    <div class="col-md-4">
+        <a href="{% url 'providers_by_category' category.id %}" class="text-decoration-none" style="display:block;">
+            <div class="card p-4 h-100" style="cursor:pointer; transition:transform 0.2s, box-shadow 0.2s;">
+                <h5 class="fw-bold text-dark" style="margin-bottom:8px;">{{ category.name }}</h5>
+                <p style="color:#888; font-size:0.88rem; margin:0;">{{ category.description }}</p>
+            </div>
+        </a>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<!-- Provider: Mission Control Dashboard -->
+<div class="d-flex justify-content-between align-items-center mb-1">
+    <h2 class="fw-black m-0" style="letter-spacing:-0.5px;">Mission Control 🚀</h2>
+</div>
+<p class="text-muted mb-4" style="font-size:0.92rem;">Your ServiceHub overview</p>
+
+<!-- Stat Cards Row -->
+<div class="row g-4 mb-5">
+    <!-- Active Jobs -->
+    <div class="col-md-4">
+        <div class="card p-4 h-100" style="background-color: #d4fcd4; border: 3px solid #000;">
+            <p class="text-uppercase fw-bold mb-1" style="color: #444; font-size: 0.8rem; letter-spacing: 1px;">Active
+                Jobs</p>
+            <h2 class="fw-black m-0" style="font-size: 3rem;">{{ active_jobs|default:"0" }}</h2>
+        </div>
+    </div>
+
+    <!-- Earnings -->
+    <div class="col-md-4">
+        <div class="card p-4 h-100" style="background-color: #ffff00; border: 3px solid #000;">
+            <p class="text-uppercase fw-bold mb-1" style="color: #444; font-size: 0.8rem; letter-spacing: 1px;">Total
+                Earnings</p>
+            <h2 class="fw-black m-0" style="font-size: 3rem;">₹{{ total_earnings|floatformat:"0" }}</h2>
+        </div>
+    </div>
+
+    <!-- Rating -->
+    <div class="col-md-4">
+        <div class="card p-4 h-100" style="background-color: #ccccff; border: 3px solid #000;">
+            <p class="text-uppercase fw-bold mb-1" style="color: #444; font-size: 0.8rem; letter-spacing: 1px;">Current
+                Rating</p>
+            <h2 class="fw-black m-0" style="font-size: 3rem;">{{ avg_rating }} <span style="font-size: 2rem;">⭐</span>
+            </h2>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Recent Activity Feed -->
+    <div class="col-md-8">
+        <h4 class="fw-bold mb-3" style="letter-spacing: -0.5px;">⚡ Recent Activity</h4>
+        <div class="card p-0" style="border: 3px solid #000; overflow: hidden;">
+            {% if recent_activity %}
+            {% for activity in recent_activity %}
+            <div class="d-flex justify-content-between align-items-center p-3"
+                style="border-bottom: 2px solid #000; {% if forloop.last %}border-bottom: none;{% endif %} background-color: #fff; transition: background 0.1s;"
+                onmouseover="this.style.backgroundColor='#fafafa'" onmouseout="this.style.backgroundColor='#fff'">
+                <div>
+                    <h6 class="fw-bold mb-1">Booking #{{ activity.id }} - {{ activity.status }}</h6>
+                    <small class="text-muted">with {{ activity.user.get_full_name|default:activity.user.username }} for
+                        {{ activity.date|date:"M d" }}</small>
+                </div>
+                {% if activity.status == 'Pending' %}
+                <span class="badge" style="background: #ffff00; color: #000; border: 2px solid #000;">Action
+                    Required</span>
+                {% elif activity.status == 'Completed' or activity.status == 'Accepted' %}
+                <span class="badge" style="background: #d4fcd4; color: #000; border: 2px solid #000;">Active/Done</span>
+                {% else %}
+                <span class="badge" style="background: #ccc; color: #000; border: 2px solid #000;">{{ activity.status
+                    }}</span>
+                {% endif %}
+            </div>
+            {% endfor %}
+            {% else %}
+            <div class="p-4 text-center text-muted">No recent activity found. Hang tight!</div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Quick Actions Panel -->
+    <div class="col-md-4">
+        <h4 class="fw-bold mb-3" style="letter-spacing: -0.5px;">🛠️ Quick Actions</h4>
+        <div class="d-flex flex-column gap-3">
+            <a href="{% url 'provider_dashboard' %}" class="btn btn-dark text-start w-100 fs-5 pb-2 pt-2"
+                style="border: 3px solid #000; box-shadow: 6px 6px 0px 0px #000;">
+                <span style="font-size: 1.5rem; margin-right: 8px;">📋</span> Manage Bookings
+            </a>
+            <a href="{% url 'profile' %}" class="btn btn-dark text-start w-100 fs-5 pb-2 pt-2"
+                style="background: #fff; color: #000; border: 3px solid #000; box-shadow: 6px 6px 0px 0px #000;">
+                <span style="font-size: 1.5rem; margin-right: 8px;">👤</span> Edit Profile
+            </a>
+            <a href="{% url 'feedback' %}" class="btn btn-dark text-start w-100 fs-5 pb-2 pt-2"
+                style="background: #ffaaaa; color: #000; border: 3px solid #000; box-shadow: 6px 6px 0px 0px #000;">
+                <span style="font-size: 1.5rem; margin-right: 8px;">📣</span> Report an Issue
+            </a>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% else %}
+<!-- Unauthenticated: Premium Editorial Landing Page -->
+
+<style>
+    /* ── Editorial Theme ── */
+    :root {
+        --ed-black: #0a0a0a;
+        --ed-white: #ffffff;
+        --ed-grey: #8a8a8a;
+        --ed-light: #e0e0e0;
+    }
+
+    html {
+        scroll-behavior: smooth;
+    }
+
+    body {
+        margin: 0;
+        padding: 12px;
+        background-color: var(--ed-black);
+        font-family: 'Inter', sans-serif;
+        color: var(--ed-black);
+        min-height: 100vh;
+        box-sizing: border-box;
+    }
+
+    .page-wrapper {
+        background-color: var(--ed-white);
+        border-radius: 32px;
+        min-height: calc(100vh - 24px);
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* EXACT CRYPKO HEADER */
+    .crypko-header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        z-index: 1000;
+        padding: 30px 40px;
+        /* Padding for logo and CTA */
+    }
+
+    .crypko-brand {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-family: 'Tektur', sans-serif;
+        font-weight: 700;
+        font-size: 2.2rem;
+        /* Increased size */
+        letter-spacing: -1px;
+        text-decoration: none;
+        color: var(--ed-black);
+        z-index: 10;
+        font-variation-settings: "wdth" 100;
+    }
+
+    .crypko-btn {
+        padding: 12px 36px;
+        font-family: 'Outfit', sans-serif;
+        /* Elegant sans-serif */
+        background: var(--ed-white);
+        color: var(--ed-black);
+        border: 2px solid var(--ed-black);
+        border-radius: 40px;
+        font-weight: 600;
+        font-size: 1.1rem;
+        /* Increased size */
+        text-decoration: none;
+        transition: all 0.2s;
+        z-index: 10;
+        background: #fff;
+    }
+
+    .crypko-btn:hover {
+        background: var(--ed-black);
+        color: var(--ed-white);
+    }
+
+    /* Hanging Black Nav Bar */
+    .crypko-hanging-nav {
+        position: absolute;
+        top: 0;
+        left: 15%;
+        right: 15%;
+        height: 80px;
+        background: var(--ed-black);
+        border-bottom-left-radius: 20px;
+        border-bottom-right-radius: 20px;
+        display: flex;
+        justify-content: space-evenly;
+        align-items: center;
+        padding-top: 10px;
+    }
+
+    .crypko-hanging-nav::before,
+    .crypko-hanging-nav::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        width: 30px;
+        height: 30px;
+        background: transparent;
+    }
+
+    .crypko-hanging-nav::before {
+        left: -30px;
+        border-top-right-radius: 20px;
+        box-shadow: 15px -15px 0 0 var(--ed-black);
+    }
+
+    .crypko-hanging-nav::after {
+        right: -30px;
+        border-top-left-radius: 20px;
+        box-shadow: -15px -15px 0 0 var(--ed-black);
+    }
+
+    .crypko-hanging-nav a {
+        text-decoration: none;
+        color: var(--ed-white);
+        font-family: 'Tektur', sans-serif;
+        font-weight: 600;
+        font-size: 1.15rem;
+        text-transform: uppercase;
+        transition: color 0.2s;
+        letter-spacing: 1.5px;
+    }
+
+    .crypko-hanging-nav a:hover,
+    .crypko-hanging-nav a.active {
+        color: #ff4a4a;
+    }
+
+    /* Offset for new absolute wrapper */
+    .ed-hero {
+        position: relative;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        overflow: hidden;
+        padding-top: 120px;
+        /* Offset for new absolute nav */
+    }
+
+
+
+    /* Background elements removed */
+
+    .ed-hero-content {
+        position: relative;
+        z-index: 10;
+        max-width: 1200px;
+        width: 100%;
+    }
+
+    .ed-headline {
+        font-family: 'Bebas Neue', sans-serif;
+        /* Or another chunky font if possible, but Bebas is good with shadow */
+        font-size: clamp(80px, 14vw, 180px);
+        line-height: 0.85;
+        margin: 0;
+        color: var(--ed-white);
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        position: relative;
+        text-shadow:
+            -2px -2px 0 var(--ed-black),
+            2px -2px 0 var(--ed-black),
+            -2px 2px 0 var(--ed-black),
+            2px 2px 0 var(--ed-black),
+            4px 4px 0 var(--ed-black),
+            6px 6px 0 var(--ed-black),
+            8px 8px 0 var(--ed-black),
+            10px 10px 0 var(--ed-black),
+            12px 12px 0 var(--ed-black),
+            14px 14px 0 var(--ed-black);
+        z-index: 10;
+        display: inline-block;
+    }
+
+    .ed-headline .outline {
+        /* No longer an outline, just part of the stacked text */
+        display: block;
+        transform: none;
+    }
+
+    .ed-subheading {
+        margin: 30px auto 40px;
+        font-family: 'Outfit', sans-serif;
+        font-size: 1.15rem;
+        font-weight: 700;
+        color: var(--ed-white);
+        background: #ff4a4a;
+        padding: 12px 24px;
+        border-radius: 8px;
+        border: 2px solid var(--ed-black);
+        max-width: 600px;
+        line-height: 1.6;
+        text-align: center;
+        letter-spacing: 0.5px;
+        box-shadow:
+            0 0 0 4px #ffffff,
+            6px 6px 0 4px var(--ed-black);
+    }
+
+    /* Buttons */
+    .ed-cta-group {
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .ed-btn {
+        padding: 16px 36px;
+        font-size: 0.9rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        text-decoration: none;
+        border-radius: 50px;
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        display: inline-block;
+    }
+
+    .ed-btn-primary {
+        background: var(--ed-black);
+        color: var(--ed-white);
+        border: 2px solid var(--ed-black);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    }
+
+    .ed-btn-primary:hover {
+        background: transparent;
+        color: var(--ed-black);
+        transform: translateY(-4px);
+    }
+
+    .ed-btn-outline {
+        background: transparent;
+        color: var(--ed-black);
+        border: 2px solid var(--ed-light);
+    }
+
+    .ed-btn-outline:hover {
+        border-color: var(--ed-black);
+    }
+
+    /* Custom SVG Button provided by User */
+    .button-svg-animated {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 16px 36px;
+        background-color: var(--ed-black);
+        border: 4px solid var(--ed-black);
+        color: var(--ed-white);
+        gap: 12px;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-decoration: none;
+        box-shadow: 10px 10px 0 rgba(0, 0, 0, 0.15);
+    }
+
+    .button-svg-animated:hover {
+        border: 4px solid var(--ed-black);
+        background-color: transparent;
+        color: var(--ed-black);
+        transform: translateY(-4px);
+    }
+
+    .button-svg-animated .text {
+        font-size: 1.2rem;
+        font-weight: 700;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+    }
+
+    .button-svg-animated .svg {
+        padding-top: 5px;
+        height: 100%;
+        width: fit-content;
+    }
+
+    .button-svg-animated .svg svg {
+        width: 40px;
+        height: 24px;
+        transition: fill 0.3s;
+    }
+
+    .button-svg-animated .svg svg path {
+        fill: var(--ed-white);
+        transition: fill 0.3s;
+    }
+
+    .button-svg-animated:hover .svg svg path {
+        fill: var(--ed-black);
+    }
+
+    .button-svg-animated:active {
+        transform: translateY(2px);
+        box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.15);
+    }
+
+    .button-svg-animated:hover .svg svg {
+        animation: jello-vertical 0.9s both;
+        transform-origin: left;
+    }
+
+    @keyframes jello-vertical {
+        0% {
+            transform: scale3d(1, 1, 1);
+        }
+
+        30% {
+            transform: scale3d(0.75, 1.25, 1);
+        }
+
+        40% {
+            transform: scale3d(1.25, 0.75, 1);
+        }
+
+        50% {
+            transform: scale3d(0.85, 1.15, 1);
+        }
+
+        65% {
+            transform: scale3d(1.05, 0.95, 1);
+        }
+
+        75% {
+            transform: scale3d(0.95, 1.05, 1);
+        }
+
+        100% {
+            transform: scale3d(1, 1, 1);
+        }
+    }
+
+    /* Floating illustrations removed */
+
+    /* Section Resets */
+    .ed-section {
+        padding: 120px 0;
+        background: var(--ed-white);
+        border-top: 5px solid var(--ed-black);
+    }
+
+    .ed-section-full {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 80px 0;
+        border-top: 5px solid var(--ed-black);
+    }
+
+    .bg-black {
+        background: var(--ed-black);
+        color: var(--ed-white);
+    }
+
+    .bg-black .ed-section-title,
+    .bg-black p,
+    .bg-black h4 {
+        color: var(--ed-white) !important;
+    }
+
+    .bg-white {
+        background: var(--ed-white);
+        color: var(--ed-black);
+    }
+
+    .ed-section-title {
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 5rem;
+        line-height: 0.9;
+        text-align: center;
+        margin-bottom: 60px;
+    }
+
+    /* Feature Grid */
+    .ed-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 30px;
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 0 40px;
+    }
+
+    .ed-card {
+        padding: 40px 30px;
+        background: transparent;
+        border: 4px solid currentColor;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .bg-black .ed-card {
+        background: var(--ed-black);
+        box-shadow: 6px 6px 0 var(--ed-white);
+    }
+
+    .bg-white .ed-card {
+        background: var(--ed-white);
+        box-shadow: 6px 6px 0 var(--ed-black);
+    }
+
+    .ed-card:hover {
+        transform: translate(-5px, -5px);
+    }
+
+    .bg-black .ed-card:hover {
+        box-shadow: 10px 10px 0 var(--ed-white);
+    }
+
+    .bg-black .ed-card:hover h4 {
+        color: #ff4a4a !important;
+    }
+
+    .bg-white .ed-card:hover {
+        box-shadow: 10px 10px 0 var(--ed-black);
+    }
+
+    .ed-card h4 {
+        font-weight: 800;
+        font-size: 1.3rem;
+        margin-bottom: 15px;
+        text-transform: uppercase;
+        letter-spacing: -0.5px;
+        transition: color 0.2s ease;
+    }
+
+    .ed-card p {
+        color: var(--ed-grey);
+        font-size: 0.95rem;
+        line-height: 1.6;
+        margin: 0;
+    }
+
+    /* Auto-scrolling Marquee */
+    .marquee-container {
+        width: 100%;
+        overflow: hidden;
+        white-space: nowrap;
+        padding-bottom: 20px;
+    }
+
+    .marquee-track {
+        display: inline-flex;
+        gap: 30px;
+        /* Width of content + gap needs to be enough to seamlessly loop */
+        animation: scrollLeftToRight 40s linear infinite;
+        padding: 0 15px;
+    }
+
+    .marquee-track:hover {
+        animation-play-state: paused;
+    }
+
+    .marquee-track .ed-card {
+        width: 450px;
+        white-space: normal;
+        flex-shrink: 0;
+    }
+
+    @keyframes scrollLeftToRight {
+        0% {
+            transform: translateX(-50%);
+        }
+
+        100% {
+            transform: translateX(0);
+        }
+    }
+
+    /* Custom Footer */
+    .ed-footer {
+        background: var(--ed-black);
+        color: var(--ed-white);
+        padding: 40px 60px 20px;
+    }
+
+    .ed-footer h2 {
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 3rem;
+        margin: 0 0 20px;
+        color: var(--ed-white);
+    }
+
+    @media (max-width: 991px) {
+        .ed-nav {
+            padding: 20px;
+        }
+
+        .ed-nav-links {
+            display: none;
+        }
+
+        .ed-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .ed-headline {
+            font-size: 100px;
+        }
+
+        .ed-illust {
+            display: none;
+        }
+    }
+</style>
+
+<div class="page-wrapper">
+    <!-- MAIN HERO -->
+    <section id="hero" class="ed-hero">
+
+        <!-- Exact Crypko Navigation -->
+        <header class="crypko-header">
+            <!-- Logo on the left, sitting inside the beige page-wrapper -->
+            <a href="{% url 'home' %}" class="crypko-brand">
+                servicehub
+            </a>
+
+            <!-- Hanging Black Nav Bar in the center -->
+            <nav class="crypko-hanging-nav">
+                <a href="#hero">Start</a>
+                <a href="#benefits">The Edge</a>
+                <a href="#process">The Playbook</a>
+                <a href="#reviews">Proof</a>
+            </nav>
+
+            <!-- CTA on the right, sitting inside the beige page-wrapper -->
+            <a href="{% url 'login' %}" class="crypko-btn">Sign In</a>
+        </header>
+
+        <!-- Hero Content -->
+        <div class="ed-hero-content container">
+            <h1 class="ed-headline" style="transform: skewY(-2deg);">
+                <div>FIND THE <span style="color: #ff4a4a;">BEST</span></div>
+                <div class="outline">LOCAL EXPERTS</div>
+            </h1>
+
+
+
+            <div class="ed-cta-group" style="margin-top: 40px;">
+                <a href="{% url 'register' %}" class="button-svg-animated">
+                    <span class="text">Book a Service</span>
+                    <span class="svg">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="50" height="20" viewBox="0 0 38 15" fill="none">
+                            <path fill="white"
+                                d="M10 7.519l-.939-.344h0l.939.344zm14.386-1.205l-.981-.192.981.192zm1.276 5.509l.537.843.148-.094.107-.139-.792-.611zm4.819-4.304l-.385-.923h0l.385.923zm7.227.707a1 1 0 0 0 0-1.414L31.343.448a1 1 0 0 0-1.414 0 1 1 0 0 0 0 1.414l5.657 5.657-5.657 5.657a1 1 0 0 0 1.414 1.414l6.364-6.364zM1 7.519l.554.833.029-.019.094-.061.361-.23 1.277-.77c1.054-.609 2.397-1.32 3.629-1.787.617-.234 1.17-.392 1.623-.455.477-.066.707-.008.788.034.025.013.031.021.039.034a.56.56 0 0 1 .058.235c.029.327-.047.906-.39 1.842l1.878.689c.383-1.044.571-1.949.505-2.705-.072-.815-.45-1.493-1.16-1.865-.627-.329-1.358-.332-1.993-.244-.659.092-1.367.305-2.056.566-1.381.523-2.833 1.297-3.921 1.925l-1.341.808-.385.245-.104.068-.028.018c-.011.007-.011.007.543.84zm8.061-.344c-.198.54-.328 1.038-.36 1.484-.032.441.024.94.325 1.364.319.45.786.64 1.21.697.403.054.824-.001 1.21-.09.775-.179 1.694-.566 2.633-1.014l3.023-1.554c2.115-1.122 4.107-2.168 5.476-2.524.329-.086.573-.117.742-.115s.195.038.161.014c-.15-.105.085-.139-.076.685l1.963.384c.192-.98.152-2.083-.74-2.707-.405-.283-.868-.37-1.28-.376s-.849.069-1.274.179c-1.65.43-3.888 1.621-5.909 2.693l-2.948 1.517c-.92.439-1.673.743-2.221.87-.276.064-.429.065-.492.057-.043-.006.066.003.155.127.07.099.024.131.038-.063.014-.187.078-.49.243-.94l-1.878-.689zm14.343-1.053c-.361 1.844-.474 3.185-.413 4.161.059.95.294 1.72.811 2.215.567.544 1.242.546 1.664.459a2.34 2.34 0 0 0 .502-.167l.15-.076.049-.028.018-.011c.013-.008.013-.008-.524-.852l-.536-.844.019-.012c-.038.018-.064.027-.084.032-.037.008.053-.013.125.056.021.02-.151-.135-.198-.895-.046-.734.034-1.887.38-3.652l-1.963-.384zm2.257 5.701l.791.611.024-.031.08-.101.311-.377 1.093-1.213c.922-.954 2.005-1.894 2.904-2.27l-.771-1.846c-1.31.547-2.637 1.758-3.572 2.725l-1.184 1.314-.341.414-.093.117-.025.032c-.01.013-.01.013.781.624zm5.204-3.381c.989-.413 1.791-.42 2.697-.307.871.108 2.083.385 3.437.385v-2c-1.197 0-2.041-.226-3.19-.369-1.114-.139-2.297-.146-3.715.447l.771 1.846z">
+                            </path>
+                        </svg>
+                    </span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- BENEFITS SECTION (BLACK) -->
+    <section id="benefits" class="ed-section-full bg-black">
+        <div class="container">
+            <h2 class="ed-section-title">Why <span style="color: #ff4a4a;">Use</span> Us?</h2>
+            <div class="ed-grid">
+                <div class="ed-card">
+                    <h4>Verified Experts</h4>
+                    <p>Every single provider goes through a strict vetting process to ensure top-notch quality and
+                        safety.
+                    </p>
+                </div>
+                <div class="ed-card">
+                    <h4>Fixed Pricing</h4>
+                    <p>No shady quotes or hidden fees. See exactly how much you'll pay right from the dashboard before
+                        confirming.</p>
+                </div>
+                <div class="ed-card">
+                    <h4>Instant Booking</h4>
+                    <p>Skip the phone calls and voicemails. Send a job right from your phone and get accepted in
+                        minutes.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- HOW IT WORKS / PROCESS SECTION (WHITE) -->
+    <section id="process" class="ed-section-full bg-white">
+        <div class="container">
+            <h2 class="ed-section-title">The Process</h2>
+            <div class="ed-grid">
+                <div class="ed-card">
+                    <h4>01. Find</h4>
+                    <p>Browse through hundreds of verified local professionals covering everything from plumbing to
+                        private
+                        tutoring.</p>
+                </div>
+                <div class="ed-card">
+                    <h4>02. Book</h4>
+                    <p>Select your required service, choose a convenient time, and instantly send a booking request to
+                        the
+                        provider.</p>
+                </div>
+                <div class="ed-card">
+                    <h4>03. Relax</h4>
+                    <p>Track your job via the live dashboard, chat with your provider in real-time, and securely pay
+                        upon
+                        completion.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SOCIAL PROOFS / TESTIMONIALS (BLACK) -->
+    <section id="reviews" class="ed-section-full bg-black" style="overflow: hidden;">
+        <div class="container-fluid px-0">
+            <h2 class="ed-section-title" style="margin-bottom: 20px;">Don't Just Take Our Word</h2>
+            <p
+                style="text-align: center; font-size: 1.2rem; font-weight: 600; text-transform: uppercase; margin-bottom: 60px;">
+                Over 10,000+ jobs completed with 5-star ratings</p>
+
+            <!-- Marquee Container -->
+            <div class="marquee-container">
+                <div class="marquee-track">
+                    <!-- Cards (Set 1) -->
+                    <div class="ed-card" style="padding: 50px 30px;">
+                        <div style="font-size: 1.8rem; margin-bottom: 15px;">⭐⭐⭐⭐⭐</div>
+                        <h4 style="font-size: 1.4rem; line-height: 1.3;">"THE PLUMBER ARRIVED IN 20 MINUTES. FIXED THE
+                            LEAK. CHARGED EXACTLY WHAT THE APP SAID."</h4>
+                        <p
+                            style="margin-top: 25px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color:#aaa;">
+                            — Sarah Jenkins</p>
+                    </div>
+
+                    <div class="ed-card" style="padding: 50px 30px;">
+                        <div style="font-size: 1.8rem; margin-bottom: 15px;">⭐⭐⭐⭐⭐</div>
+                        <h4 style="font-size: 1.4rem; line-height: 1.3;">"A COMPLETE LIFESAVER WARNING ME BEFORE I TRIED
+                            TO FIX THE ELECTRICAL PANEL MYSELF."</h4>
+                        <p
+                            style="margin-top: 25px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color:#aaa;">
+                            — Mark D.</p>
+                    </div>
+
+                    <div class="ed-card" style="padding: 50px 30px;">
+                        <div style="font-size: 1.8rem; margin-bottom: 15px;">⭐⭐⭐⭐⭐</div>
+                        <h4 style="font-size: 1.4rem; line-height: 1.3;">"FOUND A BRILLIANT MATH TUTOR FOR MY DAUGHTER
+                            IN UNDER 5 MINUTES. INCREDIBLE."</h4>
+                        <p
+                            style="margin-top: 25px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color:#aaa;">
+                            — Elena R.</p>
+                    </div>
+
+                    <div class="ed-card" style="padding: 50px 30px;">
+                        <div style="font-size: 1.8rem; margin-bottom: 15px;">⭐⭐⭐⭐⭐</div>
+                        <h4 style="font-size: 1.4rem; line-height: 1.3;">"LOCKSMITH CAME OUT AT 2 AM WHEN I WAS LOCKED
+                            OUT IN THE RAIN. LIFELONG CUSTOMER NOW."</h4>
+                        <p
+                            style="margin-top: 25px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color:#aaa;">
+                            — James T.</p>
+                    </div>
+
+                    <div class="ed-card" style="padding: 50px 30px;">
+                        <div style="font-size: 1.8rem; margin-bottom: 15px;">⭐⭐⭐⭐⭐</div>
+                        <h4 style="font-size: 1.4rem; line-height: 1.3;">"NO MORE QUOTES OR HAGGLING. THE FIXED PRICE
+                            SYSTEM IS A GAME CHANGER."</h4>
+                        <p
+                            style="margin-top: 25px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color:#aaa;">
+                            — Anita W.</p>
+                    </div>
+
+                    <div class="ed-card" style="padding: 50px 30px;">
+                        <div style="font-size: 1.8rem; margin-bottom: 15px;">⭐⭐⭐⭐⭐</div>
+                        <h4 style="font-size: 1.4rem; line-height: 1.3;">"APP IS SUPER CLEAN. MOVERS WERE EXTREMELY
+                            PROFESSIONAL AND QUICK."</h4>
+                        <p
+                            style="margin-top: 25px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color:#aaa;">
+                            — David G.</p>
+                    </div>
+
+                    <!-- Cards (Set 2 duplicated for seamless infinite scroll) -->
+                    <div class="ed-card" style="padding: 50px 30px;">
+                        <div style="font-size: 1.8rem; margin-bottom: 15px;">⭐⭐⭐⭐⭐</div>
+                        <h4 style="font-size: 1.4rem; line-height: 1.3;">"THE PLUMBER ARRIVED IN 20 MINUTES. FIXED THE
+                            LEAK. CHARGED EXACTLY WHAT THE APP SAID."</h4>
+                        <p
+                            style="margin-top: 25px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color:#aaa;">
+                            — Sarah Jenkins</p>
+                    </div>
+
+                    <div class="ed-card" style="padding: 50px 30px;">
+                        <div style="font-size: 1.8rem; margin-bottom: 15px;">⭐⭐⭐⭐⭐</div>
+                        <h4 style="font-size: 1.4rem; line-height: 1.3;">"A COMPLETE LIFESAVER WARNING ME BEFORE I TRIED
+                            TO FIX THE ELECTRICAL PANEL MYSELF."</h4>
+                        <p
+                            style="margin-top: 25px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color:#aaa;">
+                            — Mark D.</p>
+                    </div>
+
+                    <div class="ed-card" style="padding: 50px 30px;">
+                        <div style="font-size: 1.8rem; margin-bottom: 15px;">⭐⭐⭐⭐⭐</div>
+                        <h4 style="font-size: 1.4rem; line-height: 1.3;">"FOUND A BRILLIANT MATH TUTOR FOR MY DAUGHTER
+                            IN UNDER 5 MINUTES. INCREDIBLE."</h4>
+                        <p
+                            style="margin-top: 25px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color:#aaa;">
+                            — Elena R.</p>
+                    </div>
+
+                    <div class="ed-card" style="padding: 50px 30px;">
+                        <div style="font-size: 1.8rem; margin-bottom: 15px;">⭐⭐⭐⭐⭐</div>
+                        <h4 style="font-size: 1.4rem; line-height: 1.3;">"LOCKSMITH CAME OUT AT 2 AM WHEN I WAS LOCKED
+                            OUT IN THE RAIN. LIFELONG CUSTOMER NOW."</h4>
+                        <p
+                            style="margin-top: 25px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color:#aaa;">
+                            — James T.</p>
+                    </div>
+
+                    <div class="ed-card" style="padding: 50px 30px;">
+                        <div style="font-size: 1.8rem; margin-bottom: 15px;">⭐⭐⭐⭐⭐</div>
+                        <h4 style="font-size: 1.4rem; line-height: 1.3;">"NO MORE QUOTES OR HAGGLING. THE FIXED PRICE
+                            SYSTEM IS A GAME CHANGER."</h4>
+                        <p
+                            style="margin-top: 25px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color:#aaa;">
+                            — Anita W.</p>
+                    </div>
+
+                    <div class="ed-card" style="padding: 50px 30px;">
+                        <div style="font-size: 1.8rem; margin-bottom: 15px;">⭐⭐⭐⭐⭐</div>
+                        <h4 style="font-size: 1.4rem; line-height: 1.3;">"APP IS SUPER CLEAN. MOVERS WERE EXTREMELY
+                            PROFESSIONAL AND QUICK."</h4>
+                        <p
+                            style="margin-top: 25px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color:#aaa;">
+                            — David G.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
+
+
+    <!-- CALL TO ACTION (WHITE) -->
+    <section class="ed-section-full bg-white">
+        <div class="container" style="text-align: center;">
+            <h2 class="ed-section-title" style="font-size: 8rem; margin-bottom: 20px;">READY?</h2>
+            <p style="font-size: 1.5rem; font-weight: 800; text-transform: uppercase; margin-bottom: 60px;">Stop wasting
+                time. Get the job done today.</p>
+            <a href="{% url 'register' %}" class="ed-btn ed-btn-primary"
+                style="font-size: 1.5rem; padding: 24px 60px; border-width: 4px; box-shadow: 12px 12px 0 var(--ed-black);">CREATE
+                YOUR ACCOUNT</a>
+        </div>
+    </section>
+
+
+
+    <!-- FOOTER -->
+    <footer class="ed-footer">
+        <div class="container d-flex justify-content-between align-items-end flex-wrap gap-4">
+            <div>
+                <h2>SERVICEHUB</h2>
+                <div style="font-family: 'Inter', sans-serif; font-size: 0.85rem; color: var(--ed-grey);">
+                    © 2024 ServiceHub Platform. All Rights Reserved.
+                </div>
+            </div>
+            <div
+                style="display:flex; gap: 30px; font-family: 'Inter', sans-serif; font-weight: 600; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px;">
+                <a href="{% url 'login' %}" style="color: var(--ed-white); text-decoration: none;">Log In</a>
+                <a href="{% url 'register' %}" style="color: var(--ed-white); text-decoration: none;">Sign Up</a>
+            </div>
+        </div>
+    </footer>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const sections = document.querySelectorAll('section[id]');
+        const navLinks = document.querySelectorAll('.crypko-hanging-nav a');
+        const logo = document.querySelector('.crypko-brand');
+        const darkSections = document.querySelectorAll('.bg-black, .ed-footer');
+
+        // Logo color inversion script
+        window.addEventListener('scroll', () => {
+            if (!logo) return;
+
+            let isOverDark = false;
+            // Get the logo's vertical center position
+            const logoRect = logo.getBoundingClientRect();
+            const logoCenterY = logoRect.top + (logoRect.height / 2);
+
+            darkSections.forEach(sec => {
+                const rect = sec.getBoundingClientRect();
+                // Check if the logo center is within the section bounds
+                if (logoCenterY >= rect.top && logoCenterY <= rect.bottom) {
+                    isOverDark = true;
+                }
+            });
+
+            if (isOverDark) {
+                logo.style.color = 'var(--ed-white)';
+            } else {
+                logo.style.color = 'var(--ed-black)';
+            }
+        });
+
+        // Scroll spy to turn links red as you scroll down
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.3
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    navLinks.forEach(link => {
+                        link.classList.remove('active');
+                        if (link.getAttribute('href') === '#' + entry.target.id) {
+                            link.classList.add('active');
+                        }
+                    });
+                }
+            });
+        }, observerOptions);
+
+        sections.forEach(sec => observer.observe(sec));
+    });
+</script>
+{% endif %}
+
+{% endblock %}
