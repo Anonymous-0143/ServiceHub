@@ -1,0 +1,29 @@
+# Git
+.git
+.gitignore
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+env.bak/
+venv.bak/
+
+# SQLite
+db.sqlite3
+*.sqlite3-journal
+
+# VS Code
+.vscode/
+
+# Environment Variables
+.env
+.env.local
+
+# Fly.io
+fly.toml
