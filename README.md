@@ -1,6 +1,6 @@
 # 🛠️ ServiceHub
 
-A full-stack **Django** web application that connects customers with trusted local service providers. Built with a modern **claymorphism UI** and role-based authentication.
+A full-stack **Django** web application that connects customers with trusted local service providers. Built with a modern **Neobrutalism UI** and role-based authentication.
 
 ---
 
@@ -38,7 +38,7 @@ A full-stack **Django** web application that connects customers with trusted loc
 | Frontend   | HTML, CSS, Bootstrap 5.3 |
 | Database   | SQLite              |
 | Font       | Inter (Google Fonts) |
-| Design     | Claymorphism         |
+| Design     | Neobrutalism         |
 
 ---
 
